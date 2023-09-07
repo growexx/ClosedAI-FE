@@ -119,13 +119,13 @@ function Layouts({ layoutVariant, collapsed, toggle, user }) {
     default:
       return (
         <Layout>
-          <SideBar
+          {/* <SideBar
             collapsed={collapsed}
             user={getUserData()}
             layoutVariant={layoutVariant}
-          />
+          /> */}
           <Layout className="site-layout">
-            <Header className="headerLayout">
+            {/* <Header className="headerLayout">
               <ToggleBreadCrumb>
                 <span
                   className="sideBarTrigger"
@@ -140,20 +140,21 @@ function Layouts({ layoutVariant, collapsed, toggle, user }) {
                 </span>
               </ToggleBreadCrumb>
               <AppHeader />
-            </Header>
+            </Header> */}
             <Content
               className="site-layout-background"
               style={{
-                margin: '24px 16px',
-                padding: 24,
-                minHeight: 280,
+                // margin: '24px 16px',
+                // padding: 24,
+                // minHeight: 280,
+                backgroundColor: '#090B13',
               }}
             >
               <App />
             </Content>
-            <Layout className="site-layout">
+            {/* <Layout className="site-layout">
               <Footer />
-            </Layout>
+            </Layout> */}
           </Layout>
         </Layout>
       );

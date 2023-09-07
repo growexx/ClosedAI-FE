@@ -27,6 +27,7 @@ import Charts from 'examples/Charts/Loadable';
 import Products from 'examples/Products/Loadable';
 import SampleForm from 'examples/SampleForm/Loadable';
 import ChangePassword from 'containers/ChangePassword/Loadable';
+import UploadDocuments from 'containers/UploadDocuments/Loadable';
 import MultiTabSupport from 'examples/MultiTabSupport/Loadable';
 import ForgotPassword from 'containers/Auth/ForgotPassword/Loadable';
 import NumeralConversion from 'examples/NumeralConversion/Loadable';
@@ -126,6 +127,9 @@ export default function App() {
         <Route path="" component={NotFoundPage} />
       </Routes>
       <GlobalStyle />
+      <Routes>
+        <Route exact path="/code" element={<UploadDocuments />} />
+      </Routes>
     </AppWrapper>
   );
 }

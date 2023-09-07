@@ -54,14 +54,7 @@ class MainLayout extends React.Component {
     if (userExists()) {
       return (
         <Spin spinning={appLoading} size="default">
-          <StyledMainLayout
-            data-environment={
-              process.env.NODE_ENV !== 'production'
-                ? process.env.NODE_ENV
-                : null
-            }
-            className="main-layout"
-          >
+          <StyledMainLayout className="main-layout">
             <Layouts
               collapsed={collapsed}
               layoutVariant={layoutVariant}
