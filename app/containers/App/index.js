@@ -128,7 +128,7 @@ export default function App() {
       </Routes>
       <GlobalStyle />
       <Routes>
-        <Route exact path="/code" element={<UploadDocuments />} />
+        <Route exact path="/upload" element={<UploadDocuments />} />
       </Routes>
     </AppWrapper>
   );

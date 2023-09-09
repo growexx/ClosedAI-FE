@@ -83,6 +83,25 @@ export const StyledUploadWrapper = styled.div`
     border-spacing: 0 1px !important;
   }
   .ant-table-tbody > tr > td {
-    padding: 0 !important;
+    padding: 4px 4px !important;
+  }
+  .anticon {
+    vertical-align: baseline !important;
+  }
+  .ant-form-item {
+    margin-bottom: 0;
+  }
+  .generate-btn {
+    width: 211px;
+    height: 51px;
+    border-radius: 10px;
+    background: #25dcd8;
+    color: #000;
+    text-align: center;
+    font-family: Nunito;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
   }
 `;

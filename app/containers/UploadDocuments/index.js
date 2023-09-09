@@ -5,27 +5,67 @@
  */
 
 import React, { useState } from 'react';
-// import { Helmet } from 'react-helmet';
-// import { Card } from 'antd';
-// import ImageUpload from 'components/ImageUpload/Loadable';
-// import { StyledProfile } from './StyledProfile';
-// import ProfileForm from './ProfileForm';
 import { InboxOutlined, DeleteOutlined } from '@ant-design/icons';
-import { Button, message, Select, Space, Table, Upload } from 'antd';
+import {
+  Button,
+  Form,
+  Input,
+  message,
+  notification,
+  Select,
+  Space,
+  Table,
+  Upload,
+} from 'antd';
 import { StyledUploadWrapper } from './styledUploadDocument';
 const { Option } = Select;
-import { Link } from 'react-router-dom';
 const { Dragger } = Upload;
 
 export function UploadDocuments() {
   const [fileList, setFileList] = useState([]);
+  const [urlList, setUrlList] = useState([]);
+  const [urlIdCounter, setUrlIdCounter] = useState(1);
+  const [fileTypeList, setFileTypeList] = useState({});
+  let limitFlag = false;
 
-  const customRequest = ({ file, onSuccess }) => {
-    // Simulate file upload using a customRequest function
-    // In this example, we always call onSuccess to simulate a successful upload
-    setTimeout(() => {
-      onSuccess();
-    }, 1000); // Simulate a 1-second upload process
+  const optionsArray = [
+    'Product Vision',
+    'Competitor Data',
+    'Call Recording',
+    'Technical Document',
+    'Feature List',
+  ];
+
+  const handleDeleteRow = (rowKey, isFileList, fileName) => {
+    if (isFileList) {
+      const updatedFileList = fileList.filter(item => item.uid !== rowKey);
+      setFileList(updatedFileList);
+      const updatedFileTypeList = { ...fileTypeList };
+      delete updatedFileTypeList[fileName];
+      setFileTypeList(updatedFileTypeList);
+    } else {
+      const updatedUrlList = urlList.filter(item => item.urlId !== rowKey);
+      setUrlList(updatedUrlList);
+    }
+  };
+
+  const handleSelectChange = (value, record, isFile) => {
+    if (isFile) {
+      const updatedFileTypeList = { ...fileTypeList };
+      updatedFileTypeList[record.name] = value;
+      setFileTypeList(updatedFileTypeList);
+    } else {
+      const updatedUrlList = [...urlList];
+      console.log(updatedUrlList);
+      console.log(record.urlId);
+      const index = urlList.findIndex(url => url.urlId === record.urlId);
+      console.log(index, 'index');
+      if (index !== -1) {
+        console.log('hereeeee');
+        updatedUrlList[index].documentType = value;
+        setUrlList(updatedUrlList);
+      }
+    }
   };
 
   const columns = [
@@ -33,33 +73,149 @@ export function UploadDocuments() {
       title: 'File Name',
       dataIndex: 'name',
       key: 'name',
+      width: '42%',
+      align: 'left',
+      render: text => (
+        <div
+          style={{
+            width: '200px',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+          }}
+        >
+          {text}
+        </div>
+      ),
     },
     {
       title: 'File Size (MB)',
       dataIndex: 'size',
       key: 'size',
-      render: (text, record) => (record.size / 1024 / 1024).toFixed(2),
+      render: (text, record) => (
+        <>{(record.size / 1024 / 1024).toFixed(2)} MB</>
+      ),
+      width: '25%',
+      align: 'center',
     },
     {
       title: 'Select Option',
       key: 'select',
       render: (text, record) => (
-        <Select defaultValue="option1" style={{ width: 120 }}>
-          <Option value="option1">Option 1</Option>
-          <Option value="option2">Option 2</Option>
-          <Option value="option3">Option 3</Option>
+        <Select
+          placeholder="Select the type of document"
+          style={{ width: 250 }}
+          dropdownStyle={{ backgroundColor: '#090B13', color: 'white' }}
+          onChange={value => handleSelectChange(value, record, true)}
+        >
+          {optionsArray.map(option => (
+            <Option
+              key={option}
+              value={option}
+              style={{ color: 'white' }}
+              onMouseEnter={e => {
+                e.currentTarget.style.backgroundColor = '#090B13';
+              }}
+            >
+              {option}
+            </Option>
+          ))}
         </Select>
       ),
+      width: '25%',
+      align: 'center',
     },
     {
       title: 'Actions',
       key: 'actions',
       render: (text, record) => (
         <Space size="middle">
-          <DeleteOutlined onClick={() => console.log('hey')} />
+          <DeleteOutlined
+            onClick={() => handleDeleteRow(record.uid, true, record.name)}
+          />
         </Space>
       ),
-      width: '5%',
+      width: '10%',
+      align: 'center',
+    },
+  ];
+
+  const columns1 = [
+    {
+      title: 'Url-Link',
+      dataIndex: 'urlLink',
+      key: 'name',
+      render: (text, record) => (
+        <Form.Item>
+          <Input
+            style={{
+              width: '300px',
+              backgroundColor: '#090B13',
+              color: 'white',
+            }}
+            placeholder="Paste your Url here"
+            value={urlList.find(x => x.urlId === record.urlId).urlLink}
+            onChange={e => {
+              const updatedUrlList = [...urlList];
+              const index = updatedUrlList.findIndex(
+                x => x.urlId === record.urlId,
+              );
+              if (index !== -1) {
+                updatedUrlList[index].urlLink = e.target.value;
+                setUrlList(updatedUrlList);
+              }
+            }}
+          />
+        </Form.Item>
+      ),
+      width: '25%',
+      align: 'left',
+    },
+    {
+      title: 'Url',
+      dataIndex: 'url',
+      key: 'size',
+      width: '25%',
+      align: 'center',
+    },
+    {
+      title: 'Select Option',
+      key: 'select',
+      render: (text, record) => (
+        <Select
+          placeholder="Select the type of document"
+          style={{ width: 250 }}
+          dropdownStyle={{ backgroundColor: '#090B13', color: 'white' }}
+          onChange={value => handleSelectChange(value, record, false)}
+        >
+          {optionsArray.map(option => (
+            <Option
+              key={option}
+              value={option}
+              style={{ color: 'white' }}
+              onMouseEnter={e => {
+                e.currentTarget.style.backgroundColor = '#090B13';
+              }}
+            >
+              {option}
+            </Option>
+          ))}
+        </Select>
+      ),
+      width: '25%',
+      align: 'center',
+    },
+    {
+      title: 'Actions',
+      key: 'actions',
+      render: (text, record) => (
+        <Space size="middle">
+          <DeleteOutlined
+            onClick={() => handleDeleteRow(record.urlId, false)}
+          />
+        </Space>
+      ),
+      width: '10%',
+      align: 'center',
     },
   ];
 
@@ -67,7 +223,9 @@ export function UploadDocuments() {
     name: 'file',
     multiple: true,
     showUploadList: false,
-    customRequest: { customRequest },
+    customRequest: () => {
+      console.log('hello');
+    },
     fileList,
     onChange(info) {
       console.log(info, 'hereee');
@@ -80,12 +238,26 @@ export function UploadDocuments() {
       } else if (status === 'error') {
         message.error(`${info.file.name} file upload failed.`);
       }
+      if (info.fileList.length + urlList.length > 5) {
+        if (!limitFlag) {
+          limitFlag = true;
+          notification.error({
+            message: 'Files Limit reached',
+            description:
+              'At most 5 input resources are allowed including pdfs, audios, videos and websites to scrape.',
+            onClose: () => {
+              limitFlag = false;
+            },
+          });
+        }
+        return;
+      }
       setFileList(info.fileList);
-      console.log(info.fileList, 'final filelist');
     },
     onDrop(e) {
       console.log('Dropped files', e.dataTransfer.files);
     },
+    accept: '.pdf,video/*,audio/*',
   };
 
   return (
@@ -199,7 +371,23 @@ export function UploadDocuments() {
                 color: 'white',
               }}
               onClick={() => {
-                console.log(fileList, 'hello');
+                if (fileList.length + urlList.length >= 5) {
+                  notification.error({
+                    message: 'Files Limit reached',
+                    description:
+                      'At most 5 input resources are allowed including pdfs, audios, videos and websites to scrape.',
+                  });
+                  return;
+                }
+                const newUrlList = [...urlList];
+                newUrlList.push({
+                  urlId: urlIdCounter,
+                  urlLink: '',
+                  url: 'Url',
+                  documentType: '',
+                });
+                setUrlList(newUrlList);
+                setUrlIdCounter(urlIdCounter + 1);
               }}
             >
               <svg
@@ -227,13 +415,42 @@ export function UploadDocuments() {
           <div>
             {fileList.length > 0 && (
               <Table
-                style={{ backgroundColor: 'black' }}
+                style={{ backgroundColor: 'black', maxWidth: '100%' }}
                 columns={columns}
                 dataSource={fileList}
                 pagination={false}
                 showHeader={false}
               />
             )}
+          </div>
+          <div>
+            {urlList.length > 0 && (
+              <Table
+                style={{ backgroundColor: 'black' }}
+                columns={columns1}
+                dataSource={urlList}
+                pagination={false}
+                showHeader={false}
+              />
+            )}
+          </div>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              marginTop: '40px',
+            }}
+          >
+            <Button
+              disabled={urlList.length + fileList.length === 0}
+              onClick={() => {
+                console.log(fileTypeList, 'fileTypeList');
+                console.log(urlList, 'urlList');
+              }}
+              className="generate-btn"
+            >
+              Generate
+            </Button>
           </div>
         </div>
       </div>
