@@ -104,4 +104,22 @@ export const StyledUploadWrapper = styled.div`
     font-weight: 700;
     line-height: normal;
   }
+  .ant-tabs > .ant-tabs-nav .ant-tabs-nav-wrap {
+    display: flex;
+    justify-content: center;
+    border: none;
+  }
+  .ant-tabs-tab {
+    font-size: 22px;
+    marginbottom: '-1px';
+  }
+  .ant-tabs > .ant-tabs-nav .ant-tabs-nav-wrap {
+    padding-left: 22px;
+  }
+  .react-flow__panel.right {
+    padding: 0;
+  }
+  .react-flow__panel.right {
+    display: none;
+  }
 `;

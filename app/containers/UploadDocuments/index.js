@@ -16,10 +16,16 @@ import {
   Select,
   Space,
   Table,
+  Tabs,
   Upload,
 } from 'antd';
 import axios from 'axios';
 import { StyledUploadWrapper } from './styledUploadDocument';
+import MindMap from '../../components/MindMap/index';
+import {
+  initialNodes,
+  initialEdges,
+} from '../../components/MindMap/nodes-edges';
 const { Option } = Select;
 const { Dragger } = Upload;
 
@@ -93,16 +99,20 @@ export function UploadDocuments() {
       }
     });
     const websiteInfo = [];
-    urlList.forEach(url => {
-      if (url.urlLink.trim() === '') {
+    for (let index = 0; index < urlList.length; index += 1) {
+      if (urlList[index].urlLink.trim() === '') {
         notification.error({
           message: 'Please enter a Url in the Input',
         });
         setLoading(false);
         return;
       }
-      websiteInfo.push({ site: url.urlLink.trim(), type: url.documentType });
-    });
+
+      websiteInfo.push({
+        site: urlList[index].urlLink.trim(),
+        type: urlList[index].documentType,
+      });
+    }
 
     const data = new FormData();
     fileList.forEach((file, index) => {
@@ -326,6 +336,29 @@ export function UploadDocuments() {
     accept: '.pdf,video/*,audio/*',
   };
 
+  const onChange = key => {
+    console.log(key);
+  };
+  const items = [
+    {
+      key: '1',
+      label: 'MindMap',
+      children: (
+        <MindMap initialNodes={initialNodes} initialEdges={initialEdges} />
+      ),
+    },
+    {
+      key: '2',
+      label: 'User Stories',
+      children: 'Content of Tab Pane 2',
+    },
+    {
+      key: '3',
+      label: 'Action Map',
+      children: 'Content of Tab Pane 3',
+    },
+  ];
+
   return (
     <>
       <StyledUploadWrapper>
@@ -421,106 +454,116 @@ export function UploadDocuments() {
                 5 files max (Video, Audio, and PDFs only)
               </p>
             </Dragger>
-
-            <div
-              className="add-url-div"
+          </div>
+          <div
+            className="add-url-div"
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              marginBottom: '36px',
+            }}
+          >
+            <Button
+              to="#"
+              className="url-button"
               style={{
-                display: 'flex',
-                justifyContent: 'center',
-                marginBottom: '36px',
+                textAlign: 'center',
+                marginTop: '31px',
+                backgroundColor: '#090B13',
+                border: 'none',
+                color: 'white',
               }}
-            >
-              <Button
-                to="#"
-                className="url-button"
-                style={{
-                  textAlign: 'center',
-                  marginTop: '31px',
-                  backgroundColor: '#090B13',
-                  border: 'none',
-                  color: 'white',
-                }}
-                onClick={() => {
-                  if (fileList.length + urlList.length >= 5) {
-                    notification.error({
-                      message: 'Files Limit reached',
-                      description:
-                        'At most 5 input resources are allowed including pdfs, audios, videos and websites to scrape.',
-                    });
-                    return;
-                  }
-                  const newUrlList = [...urlList];
-                  newUrlList.push({
-                    urlId: urlIdCounter,
-                    urlLink: '',
-                    url: 'Url',
-                    documentType: 'none',
+              onClick={() => {
+                if (fileList.length + urlList.length >= 5) {
+                  notification.error({
+                    message: 'Files Limit reached',
+                    description:
+                      'At most 5 input resources are allowed including pdfs, audios, videos and websites to scrape.',
                   });
-                  setUrlList(newUrlList);
-                  setUrlIdCounter(urlIdCounter + 1);
-                }}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                >
-                  <path
-                    d="M11 17H7C5.61667 17 4.43733 16.5123 3.462 15.537C2.48667 14.5617 1.99933 13.3827 2 12C2 10.6167 2.48767 9.43733 3.463 8.462C4.43833 7.48667 5.61733 6.99933 7 7H11V9H7C6.16667 9 5.45833 9.29167 4.875 9.875C4.29167 10.4583 4 11.1667 4 12C4 12.8333 4.29167 13.5417 4.875 14.125C5.45833 14.7083 6.16667 15 7 15H11V17ZM8 13V11H16V13H8ZM13 17V15H17C17.8333 15 18.5417 14.7083 19.125 14.125C19.7083 13.5417 20 12.8333 20 12C20 11.1667 19.7083 10.4583 19.125 9.875C18.5417 9.29167 17.8333 9 17 9H13V7H17C18.3833 7 19.5627 7.48767 20.538 8.463C21.5133 9.43833 22.0007 10.6173 22 12C22 13.3833 21.5123 14.5627 20.537 15.538C19.5617 16.5133 18.3827 17.0007 17 17H13Z"
-                    fill="#26DDD2"
-                  />
-                </svg>
-                <span
-                  style={{
-                    marginLeft: '5px',
-                    fontSize: '16px',
-                  }}
-                >
-                  Have web pages you want us to scrape?
-                </span>
-              </Button>
-            </div>
-            <div>
-              {fileList.length > 0 && (
-                <Table
-                  style={{ backgroundColor: 'black', maxWidth: '100%' }}
-                  columns={columns}
-                  dataSource={fileList}
-                  pagination={false}
-                  showHeader={false}
-                />
-              )}
-            </div>
-            <div>
-              {urlList.length > 0 && (
-                <Table
-                  style={{ backgroundColor: 'black' }}
-                  columns={columns1}
-                  dataSource={urlList}
-                  pagination={false}
-                  showHeader={false}
-                />
-              )}
-            </div>
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-                marginTop: '40px',
+                  return;
+                }
+                const newUrlList = [...urlList];
+                newUrlList.push({
+                  urlId: urlIdCounter,
+                  urlLink: '',
+                  url: 'Url',
+                  documentType: 'none',
+                });
+                setUrlList(newUrlList);
+                setUrlIdCounter(urlIdCounter + 1);
               }}
             >
-              <Button
-                disabled={urlList.length + fileList.length === 0 || loading}
-                onClick={handleSubmit}
-                className="generate-btn"
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
               >
-                Generate
-              </Button>
-            </div>
+                <path
+                  d="M11 17H7C5.61667 17 4.43733 16.5123 3.462 15.537C2.48667 14.5617 1.99933 13.3827 2 12C2 10.6167 2.48767 9.43733 3.463 8.462C4.43833 7.48667 5.61733 6.99933 7 7H11V9H7C6.16667 9 5.45833 9.29167 4.875 9.875C4.29167 10.4583 4 11.1667 4 12C4 12.8333 4.29167 13.5417 4.875 14.125C5.45833 14.7083 6.16667 15 7 15H11V17ZM8 13V11H16V13H8ZM13 17V15H17C17.8333 15 18.5417 14.7083 19.125 14.125C19.7083 13.5417 20 12.8333 20 12C20 11.1667 19.7083 10.4583 19.125 9.875C18.5417 9.29167 17.8333 9 17 9H13V7H17C18.3833 7 19.5627 7.48767 20.538 8.463C21.5133 9.43833 22.0007 10.6173 22 12C22 13.3833 21.5123 14.5627 20.537 15.538C19.5617 16.5133 18.3827 17.0007 17 17H13Z"
+                  fill="#26DDD2"
+                />
+              </svg>
+              <span
+                style={{
+                  marginLeft: '5px',
+                  fontSize: '16px',
+                }}
+              >
+                Have web pages you want us to scrape?
+              </span>
+            </Button>
+          </div>
+          <div style={{ width: '100%' }}>
+            {fileList.length > 0 && (
+              <Table
+                style={{ backgroundColor: 'black', maxWidth: '100%' }}
+                columns={columns}
+                dataSource={fileList}
+                pagination={false}
+                showHeader={false}
+              />
+            )}
+          </div>
+          <div style={{ width: '100%' }}>
+            {urlList.length > 0 && (
+              <Table
+                style={{ backgroundColor: 'black' }}
+                columns={columns1}
+                dataSource={urlList}
+                pagination={false}
+                showHeader={false}
+              />
+            )}
+          </div>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              marginTop: '40px',
+            }}
+          >
+            <Button
+              disabled={urlList.length + fileList.length === 0 || loading}
+              onClick={handleSubmit}
+              className="generate-btn"
+            >
+              Generate
+            </Button>
           </div>
           {/* <div style={{ height: '1000px', border: '2px solid red' }}>hello</div> */}
+          {/* <div style={{ marginTop: '40px' }}>
+            <MindMap />
+          </div> */}
+          <div style={{ marginTop: '50px' }}>
+            <Tabs
+              defaultActiveKey="1"
+              items={items}
+              onChange={onChange}
+              style={{ color: 'white', margin: '0 10px' }}
+            />
+          </div>
         </div>
       </StyledUploadWrapper>
       <div
