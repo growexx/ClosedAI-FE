@@ -97,6 +97,7 @@
     "draft-js-export-html": "^1.4.1",
     "elkjs": "^0.8.2",
     "eventemitter3": "^4.0.7",
+    "eventsource": "^2.0.2",
     "express": "^4.18.2",
     "firebase": "^10.1.0",
     "fontfaceobserver": "2.3.0",

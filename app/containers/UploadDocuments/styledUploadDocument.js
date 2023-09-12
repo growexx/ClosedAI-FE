@@ -119,7 +119,4 @@ export const StyledUploadWrapper = styled.div`
   .react-flow__panel.right {
     padding: 0;
   }
-  .react-flow__panel.right {
-    display: none;
-  }
 `;

@@ -145,7 +145,7 @@ function LayoutFlow({ initialNodes, initialEdges }) {
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         fitView
-        style={{ backgroundColor: '#090B13', borderRadius: '7px' }}
+        style={{ backgroundColor: 'grey', borderRadius: '7px' }}
       >
         <Panel position="top-right">
           <Button

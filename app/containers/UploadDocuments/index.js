@@ -4,7 +4,7 @@
  *
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { InboxOutlined, DeleteOutlined } from '@ant-design/icons';
 import {
@@ -35,7 +35,7 @@ export function UploadDocuments() {
   const [urlIdCounter, setUrlIdCounter] = useState(1);
   const [fileTypeList, setFileTypeList] = useState({});
   const [loading, setLoading] = useState(false);
-  const [uniqueId, setUniqueId] = useState(uuidv4());
+  const [uniqueId, setUniqueId] = useState(uuidv4().split('-')[0]);
   let limitFlag = false;
 
   const optionsArray = [
@@ -115,13 +115,13 @@ export function UploadDocuments() {
     }
 
     const data = new FormData();
-    fileList.forEach((file, index) => {
-      data.append(`files[${index}]`, file);
+    fileList.forEach(file => {
+      data.append(`files`, file.originFileObj);
     });
-    data.append('message', 'hello');
+    data.append('message', 'hello123');
     data.append('websiteInfo', JSON.stringify(websiteInfo));
     data.append('fileInfo', JSON.stringify(updatedFileTypeList));
-    data.append('userId', '123');
+    data.append('userId', uniqueId);
 
     const requestUrl =
       'https://node-mindmap-codeathon.onrender.com/summary/upload-data/';
@@ -328,6 +328,7 @@ export function UploadDocuments() {
         }
         return;
       }
+      console.log(info.fileList, 'filessssssssssss');
       setFileList(info.fileList);
     },
     onDrop(e) {
@@ -358,6 +359,17 @@ export function UploadDocuments() {
       children: 'Content of Tab Pane 3',
     },
   ];
+
+  useEffect(() => {
+    const events = new EventSource(
+      `https://node-mindmap-codeathon.onrender.com/summary/events?id=${uniqueId}`,
+    );
+
+    events.onmessage = event => {
+      const parsedData = JSON.parse(event.data);
+      console.log(parsedData, 'data from events');
+    };
+  }, []);
 
   return (
     <>
@@ -515,7 +527,7 @@ export function UploadDocuments() {
               </span>
             </Button>
           </div>
-          <div style={{ width: '100%' }}>
+          <div style={{ width: '700px' }}>
             {fileList.length > 0 && (
               <Table
                 style={{ backgroundColor: 'black', maxWidth: '100%' }}
@@ -526,7 +538,7 @@ export function UploadDocuments() {
               />
             )}
           </div>
-          <div style={{ width: '100%' }}>
+          <div style={{ width: '700px' }}>
             {urlList.length > 0 && (
               <Table
                 style={{ backgroundColor: 'black' }}
