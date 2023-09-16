@@ -18,6 +18,7 @@ import {
   Space,
   Table,
   Tabs,
+  Tooltip,
   Upload,
 } from 'antd';
 import axios from 'axios';
@@ -169,7 +170,7 @@ export function UploadDocuments() {
             width: '200px',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
-            whiteSpace:'noWrap',
+            whiteSpace: 'noWrap',
           }}
         >
           {text}
@@ -481,7 +482,7 @@ export function UploadDocuments() {
           </div>
           <div
             className="multi-upload-dragger"
-            style={{ width: '100%',maxWidth: '700px', height: '220px' }}
+            style={{ width: '100%', maxWidth: '700px', height: '220px' }}
           >
             <Dragger
               {...props}
@@ -501,9 +502,9 @@ export function UploadDocuments() {
                 className="ant-upload-text drag-drop"
                 style={{ color: 'white' }}
               >
-              <ul>
-                <li>Drag and Drop or click to upload your files</li>
-              </ul>
+                <ul>
+                  <li>Drag and Drop or click to upload your files</li>
+                </ul>
               </p>
               <p className="ant-upload-hint">
                 5 files max (Video, Audio, and PDFs only)
@@ -527,7 +528,7 @@ export function UploadDocuments() {
                 backgroundColor: '#090B13',
                 border: 'none',
                 color: 'white',
-                display:'flex',
+                display: 'flex',
                 justifyContent: 'center',
               }}
               onClick={() => {
@@ -574,30 +575,30 @@ export function UploadDocuments() {
             </Button>
           </div>
           <div className="attachment-container">
-          <div style={{ width: '100%', maxWidth: '700px' }}>
-            {fileList.length > 0 && (
-              <Table
-                style={{ backgroundColor: 'black', maxWidth: '100%' }}
-                columns={columns}
-                dataSource={fileList}
-                pagination={false}
-                showHeader={false}
-              />
-            )}
+            <div style={{ width: '100%', maxWidth: '700px' }}>
+              {fileList.length > 0 && (
+                <Table
+                  style={{ backgroundColor: 'black', maxWidth: '100%' }}
+                  columns={columns}
+                  dataSource={fileList}
+                  pagination={false}
+                  showHeader={false}
+                />
+              )}
+            </div>
+            <div style={{ width: '100%', maxWidth: '700px' }}>
+              {urlList.length > 0 && (
+                <Table
+                  style={{ backgroundColor: 'black' }}
+                  columns={columns1}
+                  dataSource={urlList}
+                  pagination={false}
+                  showHeader={false}
+                />
+              )}
+            </div>
           </div>
-          <div style={{ width: '100%', maxWidth: '700px' }}>
-            {urlList.length > 0 && (
-              <Table
-                style={{ backgroundColor: 'black' }}
-                columns={columns1}
-                dataSource={urlList}
-                pagination={false}
-                showHeader={false}
-              />
-            )}
-          </div>
-          </div>
-          
+
           <div
             style={{
               display: 'flex',
@@ -605,20 +606,42 @@ export function UploadDocuments() {
               marginTop: '40px',
             }}
           >
-            <Button
-              disabled={urlList.length + fileList.length === 0 || loading}
-              onClick={handleSubmit}
-              className="generate-btn"
-              title="Please upload a file or add a URL"
+            <Tooltip
+              title={
+                urlList.length + fileList.length === 0
+                  ? 'Upload a file or add a URL to generate'
+                  : loading
+                  ? 'Please wait untill we process your data'
+                  : ''
+              }
             >
-              Generate
-            </Button>
+              <Button
+                disabled={urlList.length + fileList.length === 0 || loading}
+                onClick={handleSubmit}
+                className="generate-btn"
+                style={{
+                  pointerEvents:
+                    urlList.length + fileList.length === 0 || loading
+                      ? 'none'
+                      : 'auto',
+                }}
+              >
+                Generate
+              </Button>
+            </Tooltip>
           </div>
           {/* <div style={{ height: '1000px', border: '2px solid red' }}>hello</div> */}
           {/* <div style={{ marginTop: '40px' }}>
             <MindMap />
           </div> */}
-          <div style={{ marginTop: '50px', width: '100%', maxWidth: '700px', overflowX: 'auto' }}>
+          <div
+            style={{
+              marginTop: '50px',
+              width: '100%',
+              maxWidth: '700px',
+              overflowX: 'auto',
+            }}
+          >
             <Tabs
               defaultActiveKey="1"
               items={items}
