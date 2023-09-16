@@ -8,6 +8,7 @@ import React, { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { InboxOutlined, DeleteOutlined } from '@ant-design/icons';
 import {
+  Alert,
   Button,
   Form,
   Input,
@@ -20,7 +21,7 @@ import {
   Upload,
 } from 'antd';
 import axios from 'axios';
-import { StyledUploadWrapper } from './styledUploadDocument';
+import { StyledUploadWrapper, AlertWrapper } from './styledUploadDocument';
 import MindMap from '../../components/MindMap/index';
 import {
   initialNodes,
@@ -35,6 +36,8 @@ export function UploadDocuments() {
   const [urlIdCounter, setUrlIdCounter] = useState(1);
   const [fileTypeList, setFileTypeList] = useState({});
   const [loading, setLoading] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('Uploading your files...');
+  const [alertBg, setAlertBg] = useState('#25DCD8');
   const [uniqueId, setUniqueId] = useState(uuidv4().split('-')[0]);
   let limitFlag = false;
 
@@ -124,27 +127,32 @@ export function UploadDocuments() {
     data.append('userId', uniqueId);
 
     const requestUrl =
-      'https://node-mindmap-codeathon.onrender.com/summary/upload-data/';
+      'https://node-mindmap-codeathon.onrender.com/summary/upload-data';
     axios
       .post(requestUrl, data, {})
       .then(res => {
         if (res.data.status === 1) {
-          notification.success({
-            message:
-              'Your files have been uploaded succesfully. Please wait untill we process the data and prepare the output ',
-          });
+          // notification.success({
+          //   message:
+          //     'Your files have been uploaded succesfully. Please wait untill we process the data and prepare the output ',
+          // });
+          setAlertMessage(
+            'Your files have been successfully uploaded. Please wait untill we analyze the data and prepare the result',
+          );
         } else {
-          notification.error({
-            message: res.data.message,
-          });
+          setAlertBg('red');
+          setAlertMessage('Something went wrong. Please try again');
+          // notification.error({
+          //   message: res.data.message,
+          // });
         }
-        console.log(res);
       })
       .catch(err => {
-        notification.error({
-          message: err.message,
-        });
-        console.log(err);
+        setAlertBg('red');
+        setAlertMessage('Something went wrong. Please try again');
+        // notification.error({
+        //   message: err.message,
+        // });
       });
   };
 
@@ -186,6 +194,7 @@ export function UploadDocuments() {
           style={{ width: 250 }}
           dropdownStyle={{ backgroundColor: '#090B13', color: 'white' }}
           onChange={value => handleSelectChange(value, record, true)}
+          disabled={loading}
         >
           {optionsArray.map(option => (
             <Option
@@ -209,8 +218,15 @@ export function UploadDocuments() {
       key: 'actions',
       render: (text, record) => (
         <Space size="middle">
-          <DeleteOutlined
+          <Button
+            icon={<DeleteOutlined />}
             onClick={() => handleDeleteRow(record.uid, true, record.name)}
+            disabled={loading}
+            style={{
+              backgroundColor: 'transparent',
+              color: 'white',
+              border: 'none',
+            }}
           />
         </Space>
       ),
@@ -244,6 +260,7 @@ export function UploadDocuments() {
                 setUrlList(updatedUrlList);
               }
             }}
+            disabled={loading}
           />
         </Form.Item>
       ),
@@ -266,6 +283,7 @@ export function UploadDocuments() {
           style={{ width: 250 }}
           dropdownStyle={{ backgroundColor: '#090B13', color: 'white' }}
           onChange={value => handleSelectChange(value, record, false)}
+          disabled={loading}
         >
           {optionsArray.map(option => (
             <Option
@@ -289,8 +307,15 @@ export function UploadDocuments() {
       key: 'actions',
       render: (text, record) => (
         <Space size="middle">
-          <DeleteOutlined
+          <Button
+            icon={<DeleteOutlined />}
             onClick={() => handleDeleteRow(record.urlId, false)}
+            disabled={loading}
+            style={{
+              backgroundColor: 'transparent',
+              color: 'white',
+              border: 'none',
+            }}
           />
         </Space>
       ),
@@ -328,7 +353,6 @@ export function UploadDocuments() {
         }
         return;
       }
-      console.log(info.fileList, 'filessssssssssss');
       setFileList(info.fileList);
     },
     onDrop(e) {
@@ -360,19 +384,35 @@ export function UploadDocuments() {
     },
   ];
 
+  const fetchData = () => {};
+
   useEffect(() => {
     const events = new EventSource(
-      `https://node-mindmap-codeathon.onrender.com/summary/events?id=${uniqueId}`,
+      `https://node-mindmap-codeathon.onrender.com/summary/events?userId=${uniqueId}`,
     );
 
     events.onmessage = event => {
-      const parsedData = JSON.parse(event.data);
-      console.log(parsedData, 'data from events');
+      // const parsedData = JSON.parse(event.data);
+      if (event.data === 'conversion complete') {
+        fetchData();
+      }
+      console.log(event, 'data from events');
     };
   }, []);
 
   return (
     <>
+      <AlertWrapper>
+        <Alert
+          message={alertMessage}
+          type="success"
+          style={
+            !loading
+              ? { display: 'none' }
+              : { backgroundColor: alertBg, textAlign: 'center' }
+          }
+        />
+      </AlertWrapper>
       <StyledUploadWrapper>
         <div
           style={{
@@ -451,6 +491,7 @@ export function UploadDocuments() {
                 background: 'rgba(255, 255, 255, 0.04)',
                 borderRadius: '25px',
               }}
+              disabled={loading}
             >
               <p className="ant-upload-drag-icon">
                 <InboxOutlined />
@@ -504,6 +545,7 @@ export function UploadDocuments() {
                 setUrlList(newUrlList);
                 setUrlIdCounter(urlIdCounter + 1);
               }}
+              disabled={loading}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"

@@ -1,9 +1,23 @@
 import styled from 'styled-components';
 
+export const AlertWrapper = styled.div`
+  .ant-alert-message {
+    // color: #044b04;
+    color: black;
+    font-size: 18px;
+  }
+  .ant-alert {
+    position: fixed; /* Set position to fixed */
+    top: 0; /* Stick it to the top of the viewport */
+    width: 100%; /* Optionally, make it span the entire width */
+    z-index: 9999; /* Optionally, control the z-index to manage stacking order */
+  }
+`;
+
 export const StyledUploadWrapper = styled.div`
   color: white;
   max-width: 1000px;
-  margin: 70px auto;
+  margin: 40px auto;
   .heading {
     color: #fff;
     text-align: center;
