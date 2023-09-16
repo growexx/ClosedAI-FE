@@ -169,6 +169,7 @@ export function UploadDocuments() {
             width: '200px',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
+            whiteSpace:'noWrap',
           }}
         >
           {text}
@@ -248,7 +249,7 @@ export function UploadDocuments() {
               backgroundColor: '#090B13',
               color: 'white',
             }}
-            placeholder="Paste your Url here"
+            placeholder="Add your URL here"
             value={urlList.find(x => x.urlId === record.urlId).urlLink}
             onChange={e => {
               const updatedUrlList = [...urlList];
@@ -470,7 +471,7 @@ export function UploadDocuments() {
               Closed AI
             </div>
           </div>
-          <div style={{ maxWidth: '550px', textAlign: 'center' }}>
+          <div style={{ maxWidth: '570px', textAlign: 'center' }}>
             <p>Convert requirements to MindMap</p>
             <p>
               An innovative platform which helps users with the converting
@@ -480,14 +481,14 @@ export function UploadDocuments() {
           </div>
           <div
             className="multi-upload-dragger"
-            style={{ width: '700px', height: '220px' }}
+            style={{ width: '100%',maxWidth: '700px', height: '220px' }}
           >
             <Dragger
               {...props}
               style={{
                 backgroundColor: 'black',
                 borderRradius: '25px',
-                border: '2px dashed #3AD0CE',
+                border: '2px dashed rgb(43 225 196)',
                 background: 'rgba(255, 255, 255, 0.04)',
                 borderRadius: '25px',
               }}
@@ -500,10 +501,11 @@ export function UploadDocuments() {
                 className="ant-upload-text drag-drop"
                 style={{ color: 'white' }}
               >
-                Drag and Drop or click to upload your files, click generate and
-                see the magic happen
+              <ul>
+                <li>Drag and Drop or click to upload your files</li>
+              </ul>
               </p>
-              <p className="ant-upload-hint" style={{ color: 'white' }}>
+              <p className="ant-upload-hint">
                 5 files max (Video, Audio, and PDFs only)
               </p>
             </Dragger>
@@ -525,6 +527,8 @@ export function UploadDocuments() {
                 backgroundColor: '#090B13',
                 border: 'none',
                 color: 'white',
+                display:'flex',
+                justifyContent: 'center',
               }}
               onClick={() => {
                 if (fileList.length + urlList.length >= 5) {
@@ -561,7 +565,7 @@ export function UploadDocuments() {
               </svg>
               <span
                 style={{
-                  marginLeft: '5px',
+                  marginLeft: '10px',
                   fontSize: '16px',
                 }}
               >
@@ -569,7 +573,8 @@ export function UploadDocuments() {
               </span>
             </Button>
           </div>
-          <div style={{ width: '700px' }}>
+          <div className="attachment-container">
+          <div style={{ width: '100%', maxWidth: '700px' }}>
             {fileList.length > 0 && (
               <Table
                 style={{ backgroundColor: 'black', maxWidth: '100%' }}
@@ -580,7 +585,7 @@ export function UploadDocuments() {
               />
             )}
           </div>
-          <div style={{ width: '700px' }}>
+          <div style={{ width: '100%', maxWidth: '700px' }}>
             {urlList.length > 0 && (
               <Table
                 style={{ backgroundColor: 'black' }}
@@ -591,6 +596,8 @@ export function UploadDocuments() {
               />
             )}
           </div>
+          </div>
+          
           <div
             style={{
               display: 'flex',
@@ -602,6 +609,7 @@ export function UploadDocuments() {
               disabled={urlList.length + fileList.length === 0 || loading}
               onClick={handleSubmit}
               className="generate-btn"
+              title="Please upload a file or add a URL"
             >
               Generate
             </Button>
@@ -610,7 +618,7 @@ export function UploadDocuments() {
           {/* <div style={{ marginTop: '40px' }}>
             <MindMap />
           </div> */}
-          <div style={{ marginTop: '50px' }}>
+          <div style={{ marginTop: '50px', width: '100%', maxWidth: '700px', overflowX: 'auto' }}>
             <Tabs
               defaultActiveKey="1"
               items={items}
