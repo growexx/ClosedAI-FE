@@ -17,6 +17,7 @@ export const AlertWrapper = styled.div`
 export const StyledUploadWrapper = styled.div`
   color: white;
   max-width: 1000px;
+  min-width: 1000px;
   margin: 40px auto;
   .heading {
     color: #fff;
@@ -49,9 +50,6 @@ export const StyledUploadWrapper = styled.div`
     font-weight: 400;
     line-height: normal;
     margin-bottom: 40px;
-  }
-   {
-    width: 100%;
   }
   .drag-drop {
     color: rgba(255, 255, 255, 0.5);
@@ -211,12 +209,15 @@ export const StyledUploadWrapper = styled.div`
   }
   .ant-tabs-tab {
     font-size: 22px;
-    marginbottom: '-1px';
+    margin-bottom: -1px;
   }
   .ant-tabs > .ant-tabs-nav .ant-tabs-nav-wrap {
     padding-left: 22px;
   }
   .react-flow__panel.right {
     padding: 0;
+  }
+  .ant-tabs-tab .ant-tabs-tab-active {
+    color: green !important;
   }
 `;

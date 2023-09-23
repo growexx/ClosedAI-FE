@@ -1,9 +1,3 @@
-/**
- *
- * Profile
- *
- */
-
 import React, { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { InboxOutlined, DeleteOutlined } from '@ant-design/icons';
@@ -13,6 +7,7 @@ import {
   Form,
   Input,
   message,
+  Modal,
   notification,
   Select,
   Space,
@@ -24,10 +19,12 @@ import {
 import axios from 'axios';
 import { StyledUploadWrapper, AlertWrapper } from './styledUploadDocument';
 import MindMap from '../../components/MindMap/index';
+import UserStories from '../../components/UserStories/index';
 import {
   initialNodes,
   initialEdges,
 } from '../../components/MindMap/nodes-edges';
+import { Stories } from '../../components/UserStories/sampleStories';
 const { Option } = Select;
 const { Dragger } = Upload;
 
@@ -40,6 +37,7 @@ export function UploadDocuments() {
   const [alertMessage, setAlertMessage] = useState('Uploading your files...');
   const [alertBg, setAlertBg] = useState('#25DCD8');
   const [uniqueId, setUniqueId] = useState(uuidv4().split('-')[0]);
+  const [startOverModal, setStartOverModal] = useState(false);
   let limitFlag = false;
 
   const optionsArray = [
@@ -377,16 +375,18 @@ export function UploadDocuments() {
     {
       key: '2',
       label: 'User Stories',
-      children: 'Content of Tab Pane 2',
+      children: <UserStories stories={Stories} />,
     },
-    {
-      key: '3',
-      label: 'Action Map',
-      children: 'Content of Tab Pane 3',
-    },
+    // {
+    //   key: '3',
+    //   label: 'Action Map',
+    //   children: 'Content of Tab Pane 3',
+    // },
   ];
 
-  const fetchData = () => {};
+  const fetchData = () => {
+    setStartOverModal(true);
+  };
 
   useEffect(() => {
     const events = new EventSource(
@@ -636,10 +636,10 @@ export function UploadDocuments() {
           </div> */}
           <div
             style={{
-              marginTop: '50px',
-              width: '100%',
-              maxWidth: '700px',
-              overflowX: 'auto',
+              margin: '50px 0',
+              // width: '100%',
+              // maxWidth: '700px',
+              // overflowX: 'auto',
             }}
           >
             <Tabs
@@ -651,6 +651,31 @@ export function UploadDocuments() {
           </div>
         </div>
       </StyledUploadWrapper>
+      <Modal
+        open={startOverModal}
+        centered
+        bodyStyle={{
+          color: 'white',
+          background: 'linear-gradient(71deg, #080509, #1a171c, #080509)',
+          border: '2px solid white',
+        }}
+        footer={null}
+      >
+        <h2 style={{ color: 'red' }}>
+          Oops! Something went wrong. Please try again.
+        </h2>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <Button
+            style={{ backgroundColor: 'green', border: 'none', color: 'white' }}
+            onClick={() => {
+              setStartOverModal(false);
+              window.location.reload();
+            }}
+          >
+            Start Over
+          </Button>
+        </div>
+      </Modal>
       <div
         style={{
           position: 'fixed',

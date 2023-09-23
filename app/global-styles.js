@@ -605,6 +605,9 @@ margin-left: 30px
     max-width: 513px;
     width: 100%;
   }
+  .ant-modal .ant-modal-body {
+    background: black !important;
+  }
 }
 `;
 
