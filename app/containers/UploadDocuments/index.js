@@ -38,6 +38,8 @@ export function UploadDocuments() {
   const [alertBg, setAlertBg] = useState('#25DCD8');
   const [uniqueId, setUniqueId] = useState(uuidv4().split('-')[0]);
   const [startOverModal, setStartOverModal] = useState(false);
+  const [mindmapNodes, setMindmapNodes] = useState([]);
+  const [mindmapEdges, setMindmapEdges] = useState([]);
   let limitFlag = false;
 
   const optionsArray = [
@@ -369,7 +371,7 @@ export function UploadDocuments() {
       key: '1',
       label: 'MindMap',
       children: (
-        <MindMap initialNodes={initialNodes} initialEdges={initialEdges} />
+        <MindMap initialNodes={mindmapNodes} initialEdges={mindmapEdges} />
       ),
     },
     {
@@ -385,7 +387,25 @@ export function UploadDocuments() {
   ];
 
   const fetchData = () => {
-    setStartOverModal(true);
+    // setStartOverModal(true);
+    const requestUrl1 = `https://node-mindmap-codeathon.onrender.com/summary/mind-map?userId=${uniqueId}`;
+    axios.get(requestUrl1, {}).then(res => {
+      if (res.data.status === 1) {
+        console.log('heree');
+        setMindmapEdges(res.data.data.edges);
+        setMindmapNodes(res.data.data.nodes);
+      }
+      console.log(res, 'Rushilll');
+    });
+    const requestUrl2 = `https://node-mindmap-codeathon.onrender.com/summary/user-stories?userId=${uniqueId}`;
+    axios.get(requestUrl2, {}).then(res => {
+      if (res.data.status === 1) {
+        // console.log('heree');
+        // setMindmapEdges(initialEdges);
+        // setMindmapNodes(initialNodes);
+      }
+      console.log(res, 'Rushilll afterr');
+    });
   };
 
   useEffect(() => {
@@ -647,6 +667,7 @@ export function UploadDocuments() {
               items={items}
               onChange={onChange}
               style={{ color: 'white', margin: '0 10px' }}
+              key={mindmapNodes}
             />
           </div>
         </div>

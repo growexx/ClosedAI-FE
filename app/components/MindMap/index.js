@@ -60,12 +60,12 @@ const getLayoutedElements = (nodes, edges, options = {}) => {
 
       edges: layoutedGraph.edges,
     }))
-    .catch(console.error);
+    .catch(err => {
+      console.log(err);
+    });
 };
 
 function LayoutFlow({ initialNodes, initialEdges }) {
-  //   console.log(initialNodes);
-  //   console.log(initialEdges);
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const { fitView } = useReactFlow();
