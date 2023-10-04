@@ -1,124 +1,103 @@
+/* eslint-disable react/no-array-index-key */
 import React, { useState } from 'react';
-import { Button, Modal } from 'antd';
+import { Button, Collapse, ConfigProvider, Modal } from 'antd';
 import PropTypes from 'prop-types';
-import { StyledUserStoriesWrapper } from './styledUserStories';
+import {
+  StyledCustomPanelWrapper,
+  StyledUserStoriesWrapper,
+} from './styledUserStories';
+const { Panel } = Collapse;
 
 const UserStories = ({ stories }) => {
+  console.log(stories);
+  const data = [];
+  stories.forEach((story, index) => {
+    data.push({
+      key: index,
+      label: story.description,
+      children: `<p>${story.description}<p>`,
+    });
+  });
+  console.log(data);
   const [accModal, setAccModal] = useState(false);
   const [modalContent, setModalContent] = useState('');
+  const onChange = key => {
+    console.log(key);
+  };
   return (
-    <>
-      <div
-        style={{
-          width: '1000px',
-          minHeight: '1000px',
-        }}
-      >
-        <StyledUserStoriesWrapper>
-          <div className="container">
-            <div className="gradient-cards">
-              {stories.map(story => (
-                <div className="card">
-                  <div className="container-card bg-green-box">
-                    <div
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                      }}
-                    >
-                      <div className="svg-div">
-                        <svg
-                          width="40px"
-                          height="40px"
-                          viewBox="0 0 16 16"
-                          version="1.1"
-                          xmlns="http://www.w3.org/2000/svg"
-                          style={{ marginRight: '10px' }}
-                        >
-                          <title>story</title>
-                          <desc>Created with Sketch.</desc>
-                          <g
-                            id="Page-1"
-                            stroke="none"
-                            strokeWidth="1"
-                            fill="none"
-                            fillRule="evenodd"
-                            sketchType="MSPage"
-                          >
-                            <g id="story" sketchType="MSArtboardGroup">
-                              <g
-                                id="Story"
-                                sketchType="MSLayerGroup"
-                                transform="translate(1.000000, 1.000000)"
-                              >
-                                <rect
-                                  id="Rectangle-36"
-                                  fill="#63BA3C"
-                                  sketchType="MSShapeGroup"
-                                  x="0"
-                                  y="0"
-                                  width="14"
-                                  height="14"
-                                  rx="2"
-                                />
-                                <path
-                                  d="M9,3 L5,3 C4.448,3 4,3.448 4,4 L4,10.5 C4,10.776 4.224,11 4.5,11 C4.675,11 4.821,10.905 4.91,10.769 L4.914,10.77 L6.84,8.54 C6.92,8.434 7.08,8.434 7.16,8.54 L9.086,10.77 L9.09,10.769 C9.179,10.905 9.325,11 9.5,11 C9.776,11 10,10.776 10,10.5 L10,4 C10,3.448 9.552,3 9,3"
-                                  id="Page-1"
-                                  fill="#FFFFFF"
-                                  sketchType="MSShapeGroup"
-                                />
-                              </g>
-                            </g>
-                          </g>
-                        </svg>
-                      </div>
-                      <div className="card-title">
-                        <div className="card-description">
-                          {story.description}
-                        </div>
-                        <div>
-                          <Button
-                            className="criteria-btn"
-                            onClick={() => {
-                              setAccModal(true);
-                              setModalContent(story.acceptanceCriteria);
-                            }}
-                          >
-                            View Acceptance Criteria
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-          <Modal
-            centered
-            open={accModal}
-            bodyStyle={{
-              color: 'white',
-              background: 'linear-gradient(71deg, #080509, #1a171c, #080509)',
-              border: '2px solid white',
-            }}
-            onOk={() => setAccModal(false)}
-            onCancel={() => setAccModal(false)}
-            footer={null}
-            closeIcon={
-              <span className="ant-modal-close-x" style={{ color: 'white' }}>
-                X
-              </span>
+    <StyledUserStoriesWrapper>
+      <StyledCustomPanelWrapper>
+        <Collapse accordion={false} expandIconPosition="end" collapsible="icon">
+          <Panel
+            header={
+              <div
+                className="custom-panel"
+                style={{ marginLeft: '9px', display: 'flex' }}
+              >
+                <span className="serial-number" style={{ marginRight: '35px' }}>
+                  No.
+                </span>
+                <span className="description" style={{ marginRight: '45px' }}>
+                  Story Title
+                </span>
+              </div>
             }
+            extra={
+              <Button
+                style={{
+                  background: 'transparent',
+                  color: 'white',
+                  border: 'none',
+                }}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                >
+                  <g opacity="0.5">
+                    <path
+                      d="M15.3332 8.00008L12.6665 5.33341V7.33342H6.6665V8.66675H12.6665V10.6667M0.666504 12.0001V4.00008C0.666504 3.64646 0.80698 3.30732 1.05703 3.05727C1.30708 2.80722 1.64622 2.66675 1.99984 2.66675H9.99984C10.3535 2.66675 10.6926 2.80722 10.9426 3.05727C11.1927 3.30732 11.3332 3.64646 11.3332 4.00008V6.00008H9.99984V4.00008H1.99984V12.0001H9.99984V10.0001H11.3332V12.0001C11.3332 12.3537 11.1927 12.6928 10.9426 12.9429C10.6926 13.1929 10.3535 13.3334 9.99984 13.3334H1.99984C1.64622 13.3334 1.30708 13.1929 1.05703 12.9429C0.80698 12.6928 0.666504 12.3537 0.666504 12.0001Z"
+                      fill="white"
+                    />
+                  </g>
+                </svg>
+                <span />
+                <span style={{ marginLeft: '5px' }}>Export</span>
+              </Button>
+            }
+          />
+        </Collapse>
+      </StyledCustomPanelWrapper>
+      <Collapse accordion={false} expandIconPosition="end">
+        {stories.map((item, index) => (
+          <Panel
+            header={
+              <div className="custom-panel-header">
+                <span className="serial-number" style={{ marginRight: '45px' }}>
+                  {index + 1}
+                </span>
+                <span className="description" style={{ marginRight: '45px' }}>
+                  {item.description}
+                </span>
+              </div>
+            }
+            key={index}
           >
-            <h2 style={{ marginBottom: '20px', color: 'white' }}>
-              Acceptance Criteria:
-            </h2>
-            <p>{modalContent}</p>
-          </Modal>
-        </StyledUserStoriesWrapper>
-      </div>
-    </>
+            <div className="custom-panel-header">
+              <span style={{ visibility: 'hidden', marginRight: '45px' }}>
+                {index + 1}
+              </span>
+              <span style={{ marginRight: '45px' }}>
+                {item.acceptanceCriteria}
+              </span>
+            </div>
+          </Panel>
+        ))}
+      </Collapse>
+    </StyledUserStoriesWrapper>
   );
 };
 

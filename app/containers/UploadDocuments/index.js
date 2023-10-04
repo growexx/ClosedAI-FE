@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react';
+/* eslint-disable indent */
+/* eslint-disable no-nested-ternary */
+import React, { useState, useEffect, useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { InboxOutlined, DeleteOutlined } from '@ant-design/icons';
 import {
@@ -34,12 +36,16 @@ export function UploadDocuments() {
   const [urlIdCounter, setUrlIdCounter] = useState(1);
   const [fileTypeList, setFileTypeList] = useState({});
   const [loading, setLoading] = useState(false);
+  const [showTabs, setShowTabs] = useState(false);
+  const [mindmapLoading, setMindmapLoading] = useState(true);
+  const [storiesLoading, setStoriesLoading] = useState(true);
   const [alertMessage, setAlertMessage] = useState('Uploading your files...');
   const [alertBg, setAlertBg] = useState('#25DCD8');
   const [uniqueId, setUniqueId] = useState(uuidv4().split('-')[0]);
   const [startOverModal, setStartOverModal] = useState(false);
   const [mindmapNodes, setMindmapNodes] = useState([]);
   const [mindmapEdges, setMindmapEdges] = useState([]);
+  const divToScroll = useRef(null);
   let limitFlag = false;
 
   const optionsArray = [
@@ -371,13 +377,17 @@ export function UploadDocuments() {
       key: '1',
       label: 'MindMap',
       children: (
-        <MindMap initialNodes={mindmapNodes} initialEdges={mindmapEdges} />
+        <MindMap
+          initialNodes={mindmapNodes}
+          initialEdges={mindmapEdges}
+          loading={mindmapLoading}
+        />
       ),
     },
     {
       key: '2',
       label: 'User Stories',
-      children: <UserStories stories={Stories} />,
+      children: <UserStories stories={Stories} loading={storiesLoading} />,
     },
     // {
     //   key: '3',
@@ -388,6 +398,8 @@ export function UploadDocuments() {
 
   const fetchData = () => {
     // setStartOverModal(true);
+    setMindmapLoading(true);
+    setStoriesLoading(true);
     const requestUrl1 = `https://node-mindmap-codeathon.onrender.com/summary/mind-map?userId=${uniqueId}`;
     axios.get(requestUrl1, {}).then(res => {
       if (res.data.status === 1) {
@@ -395,6 +407,9 @@ export function UploadDocuments() {
         setMindmapEdges(res.data.data.edges);
         setMindmapNodes(res.data.data.nodes);
       }
+      setLoading(false);
+      setMindmapLoading(false);
+      setUniqueId(uuidv4().split('-')[0]);
       console.log(res, 'Rushilll');
     });
     const requestUrl2 = `https://node-mindmap-codeathon.onrender.com/summary/user-stories?userId=${uniqueId}`;
@@ -404,6 +419,9 @@ export function UploadDocuments() {
         // setMindmapEdges(initialEdges);
         // setMindmapNodes(initialNodes);
       }
+      setLoading(false);
+      setStoriesLoading(false);
+      setUniqueId(uuidv4().split('-')[0]);
       console.log(res, 'Rushilll afterr');
     });
   };
@@ -416,6 +434,13 @@ export function UploadDocuments() {
     events.onmessage = event => {
       // const parsedData = JSON.parse(event.data);
       if (event.data === 'conversion complete') {
+        setShowTabs(true);
+        setTimeout(() => {
+          if (divToScroll.current) {
+            divToScroll.current.scrollIntoView({ behavior: 'smooth' });
+          }
+        }, 500);
+
         fetchData();
       }
       console.log(event, 'data from events');
@@ -650,26 +675,28 @@ export function UploadDocuments() {
               </Button>
             </Tooltip>
           </div>
-          {/* <div style={{ height: '1000px', border: '2px solid red' }}>hello</div> */}
-          {/* <div style={{ marginTop: '40px' }}>
-            <MindMap />
-          </div> */}
-          <div
-            style={{
-              margin: '50px 0',
-              // width: '100%',
-              // maxWidth: '700px',
-              // overflowX: 'auto',
-            }}
-          >
-            <Tabs
-              defaultActiveKey="1"
-              items={items}
-              onChange={onChange}
-              style={{ color: 'white', margin: '0 10px' }}
-              key={mindmapNodes}
-            />
-          </div>
+
+          {!showTabs && (
+            <div
+              style={{
+                margin: '50px 0',
+                width: '1000px',
+                height: '1000px',
+              }}
+              ref={divToScroll}
+            >
+              <Tabs
+                defaultActiveKey="1"
+                items={items}
+                onChange={onChange}
+                style={{
+                  color: 'white',
+                  margin: '0 10px',
+                }}
+                key={mindmapNodes}
+              />
+            </div>
+          )}
         </div>
       </StyledUploadWrapper>
       <Modal

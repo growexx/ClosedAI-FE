@@ -10,7 +10,7 @@ import ReactFlow, {
   getRectOfNodes,
   getTransformForBounds,
 } from 'reactflow';
-import { Button } from 'antd';
+import { Button, Spin } from 'antd';
 import { toPng } from 'html-to-image';
 import PropTypes from 'prop-types';
 
@@ -191,11 +191,17 @@ function LayoutFlow({ initialNodes, initialEdges }) {
   );
 }
 
-const MindMap = ({ initialNodes, initialEdges }) => (
-  <ReactFlowProvider>
-    <LayoutFlow initialNodes={initialNodes} initialEdges={initialEdges} />
-  </ReactFlowProvider>
-);
+const MindMap = ({ initialNodes, initialEdges, loading }) =>
+  !loading ? (
+    <ReactFlowProvider>
+      <LayoutFlow initialNodes={initialNodes} initialEdges={initialEdges} />
+    </ReactFlowProvider>
+  ) : (
+    <Spin
+      style={{ marginTop: '300px', marginLeft: '480px', fontSize: '50px' }}
+      size="large"
+    />
+  );
 
 LayoutFlow.propTypes = {
   initialNodes: PropTypes.array.isRequired,
@@ -205,6 +211,7 @@ LayoutFlow.propTypes = {
 MindMap.propTypes = {
   initialNodes: PropTypes.array.isRequired,
   initialEdges: PropTypes.array.isRequired,
+  loading: PropTypes.bool.isRequired,
 };
 
 export default MindMap;

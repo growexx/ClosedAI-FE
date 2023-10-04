@@ -220,4 +220,8 @@ export const StyledUploadWrapper = styled.div`
   .ant-tabs-tab .ant-tabs-tab-active {
     color: green !important;
   }
+
+  .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+    color: #a041db !important;
+  }
 `;
