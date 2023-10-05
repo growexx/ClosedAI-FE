@@ -649,6 +649,7 @@ export function UploadDocuments() {
               display: 'flex',
               justifyContent: 'center',
               marginTop: '40px',
+              marginBottom: '70px'
             }}
           >
             <Tooltip

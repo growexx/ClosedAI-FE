@@ -224,4 +224,33 @@ export const StyledUploadWrapper = styled.div`
   .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
     color: #2ae0c8 !important;
   }
+
+  .ant-tabs > .ant-tabs-nav .ant-tabs-nav-list{
+    width: 100%;
+    flex: 1 0 100%;
+  }
+  .ant-tabs > .ant-tabs-nav .ant-tabs-nav-list .ant-tabs-tab {
+    flex: 1;
+    text-align: center;
+    justify-content: center;
+}
+.ant-tabs > .ant-tabs-nav .ant-tabs-nav-wrap {
+  padding: 0 !important;
+}
+.ant-tabs-tab.ant-tabs-tab-active {
+  background: rgba(255,255,255,0.05) !important;
+  border-radius: 7px 7px 0 0;
+}
+.ant-tabs-top > .ant-tabs-nav .ant-tabs-ink-bar{
+  background: rgb(42, 224, 200);
+}
+.ant-tabs-nav::before, .ant-tabs-nav::after{
+  border-color: rgba(255,255,255,0.05) !important;
+}
+.ant-tabs-tab-btn{
+  color: rgba(255,255,255,0.5);
+}
+.ant-tabs-tab:hover .ant-tabs-tab-btn{
+  color: rgba(42, 224, 200,0.5);
+}
 `;
