@@ -347,13 +347,13 @@ export function UploadDocuments() {
       } else if (status === 'error') {
         message.error(`${info.file.name} file upload failed.`);
       }
-      if (info.fileList.length + urlList.length > 5) {
+      if (info.fileList.length + urlList.length > 3) {
         if (!limitFlag) {
           limitFlag = true;
           notification.error({
             message: 'Files Limit reached',
             description:
-              'At most 5 input resources are allowed including pdfs, audios, videos and websites to scrape.',
+              'At most 3 input resources are allowed including pdfs, audios, videos and websites to scrape.',
             onClose: () => {
               limitFlag = false;
             },
@@ -552,7 +552,7 @@ export function UploadDocuments() {
                 </ul>
               </p>
               <p className="ant-upload-hint">
-                5 files max (Video, Audio, and PDFs only)
+                3 files max (Video, Audio, and PDFs only)
               </p>
             </Dragger>
           </div>
@@ -676,7 +676,7 @@ export function UploadDocuments() {
             </Tooltip>
           </div>
 
-          {!showTabs && (
+          {showTabs && (
             <div
               style={{
                 margin: '50px 0',
