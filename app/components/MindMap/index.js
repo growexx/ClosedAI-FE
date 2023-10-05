@@ -145,7 +145,7 @@ function LayoutFlow({ initialNodes, initialEdges }) {
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         fitView
-        style={{ backgroundColor: 'grey', borderRadius: '7px' }}
+        style={{ backgroundColor: '#13151c', borderRadius: '20px' }}
       >
         <Panel position="top-right">
           <Button
@@ -153,9 +153,9 @@ function LayoutFlow({ initialNodes, initialEdges }) {
             style={{
               color: 'white',
               marginRight: '15px',
-              backgroundColor: '#4d186e',
-              border: 'none',
-              borderRadius: '5px',
+              backgroundColor: 'rgba(255,255,255,0.1)',
+              border: '1px solid #2ae0c8',
+              borderRadius: '7px',
             }}
           >
             Vertical Layout
@@ -166,9 +166,9 @@ function LayoutFlow({ initialNodes, initialEdges }) {
             style={{
               color: 'white',
               marginRight: '15px',
-              backgroundColor: '#4d186e',
-              border: 'none',
-              borderRadius: '5px',
+              backgroundColor: 'rgba(255,255,255,0.1)',
+              border: '1px solid #2ae0c8',
+              borderRadius: '7px',
             }}
           >
             Horizontal Layout
@@ -178,9 +178,9 @@ function LayoutFlow({ initialNodes, initialEdges }) {
             onClick={onClick}
             style={{
               color: 'white',
-              backgroundColor: '#4d186e',
-              border: 'none',
-              borderRadius: '5px',
+              backgroundColor: 'rgba(255,255,255,0.1)',
+              border: '1px solid #2ae0c8',
+              borderRadius: '7px',
             }}
           >
             Download Image
