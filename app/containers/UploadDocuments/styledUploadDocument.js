@@ -16,8 +16,9 @@ export const AlertWrapper = styled.div`
 
 export const StyledUploadWrapper = styled.div`
   color: white;
+  padding: 10px 40px;
+  width: 100%;
   max-width: 1000px;
-  min-width: 1000px;
   margin: 40px auto;
   .heading {
     color: #fff;
@@ -61,7 +62,7 @@ export const StyledUploadWrapper = styled.div`
   }
   .drag-drop ul {
     width: 100%;
-    max-width: 320px;
+    max-width: 400px;
     margin-left: auto;
     margin-right: auto;
     margin-bottom: 0;
@@ -71,7 +72,7 @@ export const StyledUploadWrapper = styled.div`
   .drag-drop ul li {
     list-style: none;
     position: relative;
-    font-size: 16px;
+    font-size: 20px;
     color: rgba(43, 225, 196, 0.7);
   }
   p.drag-drop {
@@ -80,7 +81,7 @@ export const StyledUploadWrapper = styled.div`
   }
   .ant-upload.ant-upload-drag p.ant-upload-hint {
     color: rgba(255, 255, 255, 0.5);
-    font-size: 12px;
+    font-size: 14px;
   }
   .ant-upload-drag-icon svg {
     fill: rgba(255, 255, 255, 0.5);
@@ -225,7 +226,7 @@ export const StyledUploadWrapper = styled.div`
     color: #2ae0c8 !important;
   }
 
-  .ant-tabs > .ant-tabs-nav .ant-tabs-nav-list{
+  .ant-tabs > .ant-tabs-nav .ant-tabs-nav-list {
     width: 100%;
     flex: 1 0 100%;
   }
@@ -233,24 +234,43 @@ export const StyledUploadWrapper = styled.div`
     flex: 1;
     text-align: center;
     justify-content: center;
-}
-.ant-tabs > .ant-tabs-nav .ant-tabs-nav-wrap {
-  padding: 0 !important;
-}
-.ant-tabs-tab.ant-tabs-tab-active {
-  background: rgba(255,255,255,0.05) !important;
-  border-radius: 7px 7px 0 0;
-}
-.ant-tabs-top > .ant-tabs-nav .ant-tabs-ink-bar{
-  background: rgb(42, 224, 200);
-}
-.ant-tabs-nav::before, .ant-tabs-nav::after{
-  border-color: rgba(255,255,255,0.05) !important;
-}
-.ant-tabs-tab-btn{
-  color: rgba(255,255,255,0.5);
-}
-.ant-tabs-tab:hover .ant-tabs-tab-btn{
-  color: rgba(42, 224, 200,0.5);
-}
+  }
+  .ant-tabs > .ant-tabs-nav .ant-tabs-nav-wrap {
+    padding: 0 !important;
+  }
+  .ant-tabs-tab.ant-tabs-tab-active {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border-radius: 7px 7px 0 0;
+  }
+  .ant-tabs-top > .ant-tabs-nav .ant-tabs-ink-bar {
+    background: rgb(42, 224, 200);
+  }
+  .ant-tabs-nav::before,
+  .ant-tabs-nav::after {
+    border-color: rgba(255, 255, 255, 0.05) !important;
+  }
+  .ant-tabs-tab-btn {
+    color: rgba(255, 255, 255, 0.5);
+  }
+  .ant-tabs-tab:hover .ant-tabs-tab-btn {
+    color: rgba(42, 224, 200, 0.5);
+  }
+  .ant-upload.ant-upload-drag,
+  .ant-upload-btn {
+    transition: 0.2s ease;
+  }
+  .ant-upload.ant-upload-drag.ant-upload-drag-hover,
+  .ant-upload-btn:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+  }
+  .react-flow__panel.top.right {
+    width: 100%;
+    padding: 20px;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .download-btn {
+    margin-left: auto;
+  }
 `;
