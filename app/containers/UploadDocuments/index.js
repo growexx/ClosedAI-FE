@@ -20,6 +20,7 @@ import axios from 'axios';
 import { StyledUploadWrapper, MessageWrapper } from './styledUploadDocument';
 import MindMap from '../../components/MindMap/index';
 import UserStories from '../../components/UserStories/index';
+import SystemActors from '../../components/SystemActors/index';
 import { Stories } from '../../components/UserStories/sampleStories';
 const { Option } = Select;
 const { Dragger } = Upload;
@@ -33,13 +34,14 @@ export function UploadDocuments() {
   const [loading, setLoading] = useState(false);
   const [showTabs, setShowTabs] = useState(false);
   const [mindmapLoading, setMindmapLoading] = useState(true);
-  const [storiesLoading, setStoriesLoading] = useState(true);
+  const [storiesLoading, setStoriesLoading] = useState(false);
   const [mindmapError, setMindmapError] = useState(false);
   const [storiesError, setStoriesError] = useState(false);
   const [alertMessage, setAlertMessage] = useState('Uploading your files ...');
   const [message, setMessage] = useState('');
   const [alertBg, setAlertBg] = useState('#25DCD8');
   const [uniqueId, setUniqueId] = useState(uuidv4().split('-')[0]);
+  // const [uniqueId, setUniqueId] = useState('abcd');
   const [startOverModal, setStartOverModal] = useState(false);
   const [mindmapNodes, setMindmapNodes] = useState([]);
   const [mindmapEdges, setMindmapEdges] = useState([]);
@@ -383,7 +385,18 @@ export function UploadDocuments() {
       label: 'User Stories',
       children: (
         <UserStories
-          stories={Stories}
+          stories={Stories[1].userStories}
+          loading={storiesLoading}
+          error={storiesError}
+        />
+      ),
+    },
+    {
+      key: '3',
+      label: 'System Actors',
+      children: (
+        <SystemActors
+          stories={Stories[0].typesOfUsers}
           loading={storiesLoading}
           error={storiesError}
         />
@@ -410,7 +423,7 @@ export function UploadDocuments() {
         setMindmapError(true);
       })
       .finally(() => {
-        setUniqueId(uuidv4().split('-')[0]);
+        // setUniqueId(uuidv4().split('-')[0]);
         setLoading(false);
         setMindmapLoading(false);
         if (!storiesLoading) {
@@ -434,7 +447,7 @@ export function UploadDocuments() {
         setStoriesError(true);
       })
       .finally(() => {
-        setUniqueId(uuidv4().split('-')[0]);
+        // setUniqueId(uuidv4().split('-')[0]);
         setLoading(false);
         setStoriesLoading(false);
         if (!mindmapLoading) {
@@ -449,7 +462,7 @@ export function UploadDocuments() {
     );
 
     events.onmessage = event => {
-      if (event.data === 'conversion complete') {
+      if (event.data === 'processing completed') {
         setShowTabs(true);
         setTimeout(() => {
           if (divToScroll.current) {
@@ -462,6 +475,7 @@ export function UploadDocuments() {
         fetchData();
       }
     };
+    // fetchData();
   }, [uniqueId]);
 
   return (

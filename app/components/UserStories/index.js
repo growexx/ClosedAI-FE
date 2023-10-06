@@ -90,31 +90,24 @@ const UserStories = ({ stories, loading, error }) => {
         </StyledCustomPanelWrapper>
         <Collapse accordion={false} expandIconPosition="end">
           {stories.map((item, index) => (
-            <Panel
-              header={
-                <div className="custom-panel-header">
-                  <span
-                    className="serial-number"
-                    style={{ marginRight: '45px' }}
-                  >
-                    {index + 1}
-                  </span>
-                  <span className="description" style={{ marginRight: '45px' }}>
-                    {item.description}
-                  </span>
-                </div>
-              }
-              key={index}
-            >
+            <div className="c-panel">
               <div className="custom-panel-header">
-                <span style={{ visibility: 'hidden', marginRight: '45px' }}>
+                <span
+                  style={{
+                    color: 'white',
+                    width: '75px',
+                  }}
+                >
                   {index + 1}
                 </span>
-                <span style={{ marginRight: '45px' }}>
-                  {item.acceptanceCriteria}
+                <span
+                  className="story-description"
+                  style={{ marginRight: '45px' }}
+                >
+                  {item.description}
                 </span>
               </div>
-            </Panel>
+            </div>
           ))}
         </Collapse>
       </StyledUserStoriesWrapper>

@@ -34,6 +34,21 @@ export const StyledUserStoriesWrapper = styled.div`
   .custom-panel .ant-collapse-expand-icon:first-child {
     display: none;
   }
+
+  .c-panel {
+    background: #13151c;
+    height: 70px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    border-radius: 10px;
+  }
+
+  .story-description {
+    width: 100%;
+    margin-right: 0 !important;
+    color: white;
+  }
 `;
 
 export const StyledCustomPanelWrapper = styled.div`
