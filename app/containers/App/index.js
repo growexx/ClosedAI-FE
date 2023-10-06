@@ -75,60 +75,10 @@ export default function App() {
           <link {...favIcon} key={index} />
         ))}
       </Helmet>
-      <Routes>
-        {/* Private Routes */}
-        <Route element={<PrivateRoute />}>
-          <Route exact path={ROUTES.HOME} element={<FeaturePage />} />
-          <Route path={ROUTES.GITHUB_SEARCH} element={<HomePage />} />
-          <Route path={ROUTES.PROFILE} element={<Profile />} />
-          <Route path={ROUTES.LOGOUT} element={<Logout />} />
-          <Route path={ROUTES.LOADER} element={<Loader />} />
-          <Route path={ROUTES.EXPORT_DATA} element={<ExportDataToCsv />} />
-          <Route path={ROUTES.USERS} element={<Users />} />
-          <Route path={ROUTES.CHARTS} element={<Charts />} />
-          <Route path={ROUTES.PRODUCTS} element={<Products />} />
-          <Route
-            path={ROUTES.MULTI_TAB_SUPPORT}
-            element={<MultiTabSupport />}
-          />
-          <Route path={ROUTES.CHANGE_PASSWORD} element={<ChangePassword />} />
-          <Route path={ROUTES.SAMPLE_FORM} element={<SampleForm />} />
-          <Route
-            path={ROUTES.NUMERAL_CONVERTER}
-            element={<NumeralConversion />}
-          />
-          <Route path={ROUTES.REACT_HOOK_FORM} element={<ReactHookForm />} />
-        </Route>
-        {/* RoleMiddleware */}
-        <Route element={<RoleMiddleWare />}>
-          <Route
-            path={ROUTES.TEST_ADMIN_PAGE}
-            element={() => <div>This is Admin Role Page</div>}
-            // ShowError redirects to 403
-            // showError
-          />
-        </Route>
-        {/* Auth Routes */}
-        <Route element={<AuthRoute />}>
-          <Route exact path={ROUTES.LOGIN} element={<Login />} />
-          <Route
-            exact
-            path={ROUTES.TWO_FACTOR_AUTHENTICATION}
-            element={<TwoFactorAuthentication />}
-          />
-          <Route exact path={ROUTES.REGISTER} element={<Register />} />
-          <Route
-            exact
-            path={ROUTES.FORGOT_PASSWORD}
-            element={<ForgotPassword />}
-          />
-        </Route>
-        <Route exact path={ROUTES.UNAUTHORIZED} component={UnauthorizedPage} />
-        <Route path="" component={NotFoundPage} />
-      </Routes>
+
       <GlobalStyle />
       <Routes>
-        <Route exact path="/upload" element={<UploadDocuments />} />
+        <Route exact path="/" element={<UploadDocuments />} />
       </Routes>
     </AppWrapper>
   );
