@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import ELK from 'elkjs/lib/elk.bundled';
 import React, { useCallback, useLayoutEffect } from 'react';
 import ReactFlow, {
@@ -191,11 +192,15 @@ function LayoutFlow({ initialNodes, initialEdges }) {
   );
 }
 
-const MindMap = ({ initialNodes, initialEdges, loading }) =>
+const MindMap = ({ initialNodes, initialEdges, loading, error }) =>
   !loading ? (
-    <ReactFlowProvider>
-      <LayoutFlow initialNodes={initialNodes} initialEdges={initialEdges} />
-    </ReactFlowProvider>
+    !error ? (
+      <ReactFlowProvider>
+        <LayoutFlow initialNodes={initialNodes} initialEdges={initialEdges} />
+      </ReactFlowProvider>
+    ) : (
+      <p>Something went wrong</p>
+    )
   ) : (
     <Spin
       style={{
@@ -217,6 +222,7 @@ MindMap.propTypes = {
   initialNodes: PropTypes.array.isRequired,
   initialEdges: PropTypes.array.isRequired,
   loading: PropTypes.bool.isRequired,
+  error: PropTypes.bool.isRequired,
 };
 
 export default MindMap;

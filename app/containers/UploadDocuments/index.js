@@ -4,11 +4,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { InboxOutlined, DeleteOutlined } from '@ant-design/icons';
 import {
-  Alert,
   Button,
   Form,
   Input,
-  message,
   Modal,
   notification,
   Select,
@@ -19,17 +17,9 @@ import {
   Upload,
 } from 'antd';
 import axios from 'axios';
-import {
-  StyledUploadWrapper,
-  AlertWrapper,
-  MessageWrapper,
-} from './styledUploadDocument';
+import { StyledUploadWrapper, MessageWrapper } from './styledUploadDocument';
 import MindMap from '../../components/MindMap/index';
 import UserStories from '../../components/UserStories/index';
-import {
-  initialNodes,
-  initialEdges,
-} from '../../components/MindMap/nodes-edges';
 import { Stories } from '../../components/UserStories/sampleStories';
 const { Option } = Select;
 const { Dragger } = Upload;
@@ -39,11 +29,15 @@ export function UploadDocuments() {
   const [urlList, setUrlList] = useState([]);
   const [urlIdCounter, setUrlIdCounter] = useState(1);
   const [fileTypeList, setFileTypeList] = useState({});
+  const [finalLoading, setFinalLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showTabs, setShowTabs] = useState(false);
   const [mindmapLoading, setMindmapLoading] = useState(true);
   const [storiesLoading, setStoriesLoading] = useState(true);
+  const [mindmapError, setMindmapError] = useState(false);
+  const [storiesError, setStoriesError] = useState(false);
   const [alertMessage, setAlertMessage] = useState('Uploading your files ...');
+  const [message, setMessage] = useState('');
   const [alertBg, setAlertBg] = useState('#25DCD8');
   const [uniqueId, setUniqueId] = useState(uuidv4().split('-')[0]);
   const [startOverModal, setStartOverModal] = useState(false);
@@ -106,6 +100,7 @@ export function UploadDocuments() {
 
   const updatedFileTypeList = { ...fileTypeList };
   const handleSubmit = () => {
+    setFinalLoading(true);
     setLoading(true);
     setTimeout(() => {
       if (divToScrollError.current) {
@@ -138,7 +133,7 @@ export function UploadDocuments() {
     fileList.forEach(file => {
       data.append(`files`, file.originFileObj);
     });
-    data.append('message', 'hello123');
+    data.append('message', message);
     data.append('websiteInfo', JSON.stringify(websiteInfo));
     data.append('fileInfo', JSON.stringify(updatedFileTypeList));
     data.append('userId', uniqueId);
@@ -155,17 +150,11 @@ export function UploadDocuments() {
         } else {
           setAlertBg('red');
           setAlertMessage('Something went wrong. Please try again');
-          // notification.error({
-          //   message: res.data.message,
-          // });
         }
       })
-      .catch(err => {
+      .catch(() => {
         setAlertBg('red');
         setAlertMessage('Something went wrong. Please try again');
-        // notification.error({
-        //   message: err.message,
-        // });
       });
   };
 
@@ -208,7 +197,7 @@ export function UploadDocuments() {
           style={{ width: 250 }}
           dropdownStyle={{ backgroundColor: '#090B13', color: 'white' }}
           onChange={value => handleSelectChange(value, record, true)}
-          disabled={loading}
+          disabled={finalLoading}
         >
           {optionsArray.map(option => (
             <Option
@@ -235,7 +224,7 @@ export function UploadDocuments() {
           <Button
             icon={<DeleteOutlined />}
             onClick={() => handleDeleteRow(record.uid, true, record.name)}
-            disabled={loading}
+            disabled={finalLoading}
             style={{
               backgroundColor: 'transparent',
               color: 'white',
@@ -274,7 +263,7 @@ export function UploadDocuments() {
                 setUrlList(updatedUrlList);
               }
             }}
-            disabled={loading}
+            disabled={finalLoading}
           />
         </Form.Item>
       ),
@@ -297,7 +286,7 @@ export function UploadDocuments() {
           style={{ width: 250 }}
           dropdownStyle={{ backgroundColor: '#090B13', color: 'white' }}
           onChange={value => handleSelectChange(value, record, false)}
-          disabled={loading}
+          disabled={finalLoading}
         >
           {optionsArray.map(option => (
             <Option
@@ -324,7 +313,7 @@ export function UploadDocuments() {
           <Button
             icon={<DeleteOutlined />}
             onClick={() => handleDeleteRow(record.urlId, false)}
-            disabled={loading}
+            disabled={finalLoading}
             style={{
               backgroundColor: 'transparent',
               color: 'white',
@@ -342,9 +331,7 @@ export function UploadDocuments() {
     name: 'file',
     multiple: true,
     showUploadList: false,
-    customRequest: () => {
-      console.log('hello');
-    },
+    customRequest: () => {},
     fileList,
     onChange(info) {
       const { status } = info.file;
@@ -387,19 +374,21 @@ export function UploadDocuments() {
           initialNodes={mindmapNodes}
           initialEdges={mindmapEdges}
           loading={mindmapLoading}
+          error={mindmapError}
         />
       ),
     },
     {
       key: '2',
       label: 'User Stories',
-      children: <UserStories stories={Stories} loading={storiesLoading} />,
+      children: (
+        <UserStories
+          stories={Stories}
+          loading={storiesLoading}
+          error={storiesError}
+        />
+      ),
     },
-    // {
-    //   key: '3',
-    //   label: 'Action Map',
-    //   children: 'Content of Tab Pane 3',
-    // },
   ];
 
   const fetchData = () => {
@@ -407,29 +396,51 @@ export function UploadDocuments() {
     setMindmapLoading(true);
     setStoriesLoading(true);
     const requestUrl1 = `https://node-mindmap-codeathon.onrender.com/summary/mind-map?userId=${uniqueId}`;
-    axios.get(requestUrl1, {}).then(res => {
-      if (res.data.status === 1) {
-        console.log('heree');
-        setMindmapEdges(res.data.data.edges);
-        setMindmapNodes(res.data.data.nodes);
-      }
-      setLoading(false);
-      setMindmapLoading(false);
-      setUniqueId(uuidv4().split('-')[0]);
-      console.log(res, 'Rushilll');
-    });
+    axios
+      .get(requestUrl1, {})
+      .then(res => {
+        if (res.data.status === 1) {
+          setMindmapEdges(res.data.data.edges);
+          setMindmapNodes(res.data.data.nodes);
+        } else {
+          setMindmapError(true);
+        }
+      })
+      .catch(() => {
+        setMindmapError(true);
+      })
+      .finally(() => {
+        setUniqueId(uuidv4().split('-')[0]);
+        setLoading(false);
+        setMindmapLoading(false);
+        if (!storiesLoading) {
+          setFinalLoading(false);
+        }
+      });
     const requestUrl2 = `https://node-mindmap-codeathon.onrender.com/summary/user-stories?userId=${uniqueId}`;
-    axios.get(requestUrl2, {}).then(res => {
-      if (res.data.status === 1) {
-        // console.log('heree');
-        // setMindmapEdges(initialEdges);
-        // setMindmapNodes(initialNodes);
-      }
-      setLoading(false);
-      setStoriesLoading(false);
-      setUniqueId(uuidv4().split('-')[0]);
-      console.log(res, 'Rushilll afterr');
-    });
+    axios
+      .get(requestUrl2, {})
+      .then(res => {
+        if (res.data.status === 1) {
+          // console.log('heree');
+          // setMindmapEdges(initialEdges);
+          // setMindmapNodes(initialNodes);
+        } else {
+          setStoriesError(true);
+        }
+        console.log(res, 'Rushilll afterr');
+      })
+      .catch(() => {
+        setStoriesError(true);
+      })
+      .finally(() => {
+        setUniqueId(uuidv4().split('-')[0]);
+        setLoading(false);
+        setStoriesLoading(false);
+        if (!mindmapLoading) {
+          setFinalLoading(false);
+        }
+      });
   };
 
   useEffect(() => {
@@ -438,7 +449,6 @@ export function UploadDocuments() {
     );
 
     events.onmessage = event => {
-      // const parsedData = JSON.parse(event.data);
       if (event.data === 'conversion complete') {
         setShowTabs(true);
         setTimeout(() => {
@@ -447,9 +457,10 @@ export function UploadDocuments() {
           }
         }, 500);
 
+        setAlertMessage('');
+
         fetchData();
       }
-      console.log(event, 'data from events');
     };
   }, [uniqueId]);
 
@@ -533,7 +544,7 @@ export function UploadDocuments() {
                 background: 'rgba(255, 255, 255, 0.04)',
                 borderRadius: '25px',
               }}
-              disabled={loading}
+              disabled={finalLoading}
             >
               <p className="ant-upload-drag-icon">
                 <InboxOutlined />
@@ -559,60 +570,61 @@ export function UploadDocuments() {
               marginBottom: '36px',
             }}
           >
-            <Button
-              to="#"
-              className="url-button"
-              style={{
-                textAlign: 'center',
-                marginTop: '31px',
-                backgroundColor: '#090B13',
-                border: 'none',
-                color: 'white',
-                display: 'flex',
-                justifyContent: 'center',
-              }}
-              onClick={() => {
-                if (fileList.length + urlList.length >= 5) {
-                  notification.error({
-                    message: 'Files Limit reached',
-                    description:
-                      'At most 5 input resources are allowed including pdfs, audios, videos and websites to scrape.',
-                  });
-                  return;
-                }
-                const newUrlList = [...urlList];
-                newUrlList.push({
-                  urlId: urlIdCounter,
-                  urlLink: '',
-                  url: 'Url',
-                  documentType: 'none',
-                });
-                setUrlList(newUrlList);
-                setUrlIdCounter(urlIdCounter + 1);
-              }}
-              disabled={loading}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-              >
-                <path
-                  d="M11 17H7C5.61667 17 4.43733 16.5123 3.462 15.537C2.48667 14.5617 1.99933 13.3827 2 12C2 10.6167 2.48767 9.43733 3.463 8.462C4.43833 7.48667 5.61733 6.99933 7 7H11V9H7C6.16667 9 5.45833 9.29167 4.875 9.875C4.29167 10.4583 4 11.1667 4 12C4 12.8333 4.29167 13.5417 4.875 14.125C5.45833 14.7083 6.16667 15 7 15H11V17ZM8 13V11H16V13H8ZM13 17V15H17C17.8333 15 18.5417 14.7083 19.125 14.125C19.7083 13.5417 20 12.8333 20 12C20 11.1667 19.7083 10.4583 19.125 9.875C18.5417 9.29167 17.8333 9 17 9H13V7H17C18.3833 7 19.5627 7.48767 20.538 8.463C21.5133 9.43833 22.0007 10.6173 22 12C22 13.3833 21.5123 14.5627 20.537 15.538C19.5617 16.5133 18.3827 17.0007 17 17H13Z"
-                  fill="#26DDD2"
-                />
-              </svg>
-              <span
+            <Tooltip title="Please provide us GPT 4 access to enable this feature">
+              <Button
+                to="#"
+                className="url-button"
                 style={{
-                  marginLeft: '10px',
-                  fontSize: '16px',
+                  textAlign: 'center',
+                  backgroundColor: '#090B13',
+                  border: 'none',
+                  color: 'white',
+                  display: 'flex',
+                  justifyContent: 'center',
                 }}
+                onClick={() => {
+                  if (fileList.length + urlList.length >= 5) {
+                    notification.error({
+                      message: 'Files Limit reached',
+                      description:
+                        'At most 5 input resources are allowed including pdfs, audios, videos and websites to scrape.',
+                    });
+                    return;
+                  }
+                  const newUrlList = [...urlList];
+                  newUrlList.push({
+                    urlId: urlIdCounter,
+                    urlLink: '',
+                    url: 'Url',
+                    documentType: 'none',
+                  });
+                  setUrlList(newUrlList);
+                  setUrlIdCounter(urlIdCounter + 1);
+                }}
+                disabled
               >
-                Have web pages you want us to scrape?
-              </span>
-            </Button>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                >
+                  <path
+                    d="M11 17H7C5.61667 17 4.43733 16.5123 3.462 15.537C2.48667 14.5617 1.99933 13.3827 2 12C2 10.6167 2.48767 9.43733 3.463 8.462C4.43833 7.48667 5.61733 6.99933 7 7H11V9H7C6.16667 9 5.45833 9.29167 4.875 9.875C4.29167 10.4583 4 11.1667 4 12C4 12.8333 4.29167 13.5417 4.875 14.125C5.45833 14.7083 6.16667 15 7 15H11V17ZM8 13V11H16V13H8ZM13 17V15H17C17.8333 15 18.5417 14.7083 19.125 14.125C19.7083 13.5417 20 12.8333 20 12C20 11.1667 19.7083 10.4583 19.125 9.875C18.5417 9.29167 17.8333 9 17 9H13V7H17C18.3833 7 19.5627 7.48767 20.538 8.463C21.5133 9.43833 22.0007 10.6173 22 12C22 13.3833 21.5123 14.5627 20.537 15.538C19.5617 16.5133 18.3827 17.0007 17 17H13Z"
+                    fill="#26DDD2"
+                  />
+                </svg>
+                <span
+                  style={{
+                    marginLeft: '10px',
+                    fontSize: '16px',
+                  }}
+                >
+                  Have web pages you want us to scrape?
+                </span>
+              </Button>
+            </Tooltip>
           </div>
           <div className="attachment-container">
             <div style={{ width: '100%', maxWidth: '700px' }}>
@@ -647,11 +659,15 @@ export function UploadDocuments() {
                   : {}
               }
             >
-              <p className="product-description" style={{ fontSize: '20px' }}>
-                Please provide us a short description about your Product
-              </p>
               <div className="input">
-                <Input.TextArea rows={4} />
+                <Input.TextArea
+                  placeholder="Please provide us a short decription about your product .."
+                  onChange={e => {
+                    setMessage(e.target.value);
+                  }}
+                  rows={4}
+                  style={{ width: '550px' }}
+                />
               </div>
             </div>
           </MessageWrapper>
@@ -675,7 +691,9 @@ export function UploadDocuments() {
               }
             >
               <Button
-                disabled={urlList.length + fileList.length === 0 || loading}
+                disabled={
+                  urlList.length + fileList.length === 0 || finalLoading
+                }
                 loading={loading}
                 onClick={handleSubmit}
                 className="generate-btn"
@@ -686,7 +704,7 @@ export function UploadDocuments() {
                       : 'auto',
                 }}
               >
-                Generate
+                {finalLoading ? '' : 'Generate'}
               </Button>
             </Tooltip>
           </div>
@@ -706,7 +724,7 @@ export function UploadDocuments() {
             {alertMessage}
           </p>
 
-          {!showTabs && (
+          {showTabs && (
             <div
               style={{
                 margin: '50px 0',
@@ -735,7 +753,7 @@ export function UploadDocuments() {
         bodyStyle={{
           color: 'white',
           background: 'linear-gradient(71deg, #080509, #1a171c, #080509)',
-          border: '2px solid white',
+          border: 'none',
         }}
         footer={null}
       >
@@ -744,7 +762,12 @@ export function UploadDocuments() {
         </h2>
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           <Button
-            style={{ backgroundColor: 'green', border: 'none', color: 'white' }}
+            style={{
+              backgroundColor: '#25DCD8',
+              border: 'none',
+              color: 'black',
+              borderRadius: '2px',
+            }}
             onClick={() => {
               setStartOverModal(false);
               window.location.reload();

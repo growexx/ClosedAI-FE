@@ -285,14 +285,18 @@ export const StyledUploadWrapper = styled.div`
   .ant-spin-dot-item {
     background: #2ae0c8;
   }
+
+  .multi-upload-dragger {
+    margin-bottom: 31px !important;
+  }
 `;
 
 export const MessageWrapper = styled.div`
   .ant-input {
     background: #13151c !important;
-    border: 1px solid #2ae0c8;
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 5px;
-    margin-top: 20px;
+    margin-top: 50px;
     color: rgba(255, 255, 255, 0.7);
   }
 `;
