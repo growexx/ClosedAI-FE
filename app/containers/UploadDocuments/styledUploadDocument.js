@@ -273,4 +273,26 @@ export const StyledUploadWrapper = styled.div`
   .download-btn {
     margin-left: auto;
   }
+
+  .product-description {
+    margin-top: 20px;
+  }
+
+  .generate-btn .ant-btn::before {
+    background: transparent;
+  }
+
+  .ant-spin-dot-item {
+    background: #2ae0c8;
+  }
+`;
+
+export const MessageWrapper = styled.div`
+  .ant-input {
+    background: #13151c !important;
+    border: 1px solid #2ae0c8;
+    border-radius: 5px;
+    margin-top: 20px;
+    color: rgba(255, 255, 255, 0.7);
+  }
 `;

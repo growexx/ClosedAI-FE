@@ -118,7 +118,7 @@ function LayoutFlow({ initialNodes, initialEdges }) {
     );
 
     toPng(document.querySelector('.react-flow__viewport'), {
-      backgroundColor: '#1a365d',
+      backgroundColor: '#13151c',
       width: imageWidth,
       height: imageHeight,
       style: {
@@ -198,7 +198,12 @@ const MindMap = ({ initialNodes, initialEdges, loading }) =>
     </ReactFlowProvider>
   ) : (
     <Spin
-      style={{ marginTop: '300px', marginLeft: '480px', fontSize: '50px' }}
+      style={{
+        marginTop: '300px',
+        marginLeft: '480px',
+        fontSize: '50px',
+        color: '#13151c',
+      }}
       size="large"
     />
   );

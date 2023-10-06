@@ -19,7 +19,11 @@ import {
   Upload,
 } from 'antd';
 import axios from 'axios';
-import { StyledUploadWrapper, AlertWrapper } from './styledUploadDocument';
+import {
+  StyledUploadWrapper,
+  AlertWrapper,
+  MessageWrapper,
+} from './styledUploadDocument';
 import MindMap from '../../components/MindMap/index';
 import UserStories from '../../components/UserStories/index';
 import {
@@ -39,13 +43,14 @@ export function UploadDocuments() {
   const [showTabs, setShowTabs] = useState(false);
   const [mindmapLoading, setMindmapLoading] = useState(true);
   const [storiesLoading, setStoriesLoading] = useState(true);
-  const [alertMessage, setAlertMessage] = useState('Uploading your files...');
+  const [alertMessage, setAlertMessage] = useState('Uploading your files ...');
   const [alertBg, setAlertBg] = useState('#25DCD8');
   const [uniqueId, setUniqueId] = useState(uuidv4().split('-')[0]);
   const [startOverModal, setStartOverModal] = useState(false);
   const [mindmapNodes, setMindmapNodes] = useState([]);
   const [mindmapEdges, setMindmapEdges] = useState([]);
   const divToScroll = useRef(null);
+  const divToScrollError = useRef(null);
   let limitFlag = false;
 
   const optionsArray = [
@@ -102,6 +107,11 @@ export function UploadDocuments() {
   const updatedFileTypeList = { ...fileTypeList };
   const handleSubmit = () => {
     setLoading(true);
+    setTimeout(() => {
+      if (divToScrollError.current) {
+        divToScrollError.current.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 500);
     fileList.forEach(file => {
       if (!Object.keys(fileTypeList).includes(file.name)) {
         updatedFileTypeList[file.name] = 'none';
@@ -139,12 +149,8 @@ export function UploadDocuments() {
       .post(requestUrl, data, {})
       .then(res => {
         if (res.data.status === 1) {
-          // notification.success({
-          //   message:
-          //     'Your files have been uploaded succesfully. Please wait untill we process the data and prepare the output ',
-          // });
           setAlertMessage(
-            'Your files have been successfully uploaded. Please wait untill we analyze the data and prepare the result',
+            'Your files have been successfully uploaded. Please wait untill we analyze the data and prepare the result ...',
           );
         } else {
           setAlertBg('red');
@@ -445,21 +451,10 @@ export function UploadDocuments() {
       }
       console.log(event, 'data from events');
     };
-  }, []);
+  }, [uniqueId]);
 
   return (
     <>
-      <AlertWrapper>
-        <Alert
-          message={alertMessage}
-          type="success"
-          style={
-            !loading
-              ? { display: 'none' }
-              : { backgroundColor: alertBg, textAlign: 'center' }
-          }
-        />
-      </AlertWrapper>
       <StyledUploadWrapper>
         <div
           style={{
@@ -643,14 +638,32 @@ export function UploadDocuments() {
               )}
             </div>
           </div>
+          <MessageWrapper>
+            <div
+              className="message-input"
+              style={
+                !(urlList.length + fileList.length > 0)
+                  ? { display: 'none' }
+                  : {}
+              }
+            >
+              <p className="product-description" style={{ fontSize: '20px' }}>
+                Please provide us a short description about your Product
+              </p>
+              <div className="input">
+                <Input.TextArea rows={4} />
+              </div>
+            </div>
+          </MessageWrapper>
 
           <div
             style={{
               display: 'flex',
               justifyContent: 'center',
               marginTop: '40px',
-              marginBottom: '70px'
+              marginBottom: '70px',
             }}
+            className="generate-btn"
           >
             <Tooltip
               title={
@@ -663,6 +676,7 @@ export function UploadDocuments() {
             >
               <Button
                 disabled={urlList.length + fileList.length === 0 || loading}
+                loading={loading}
                 onClick={handleSubmit}
                 className="generate-btn"
                 style={{
@@ -676,8 +690,23 @@ export function UploadDocuments() {
               </Button>
             </Tooltip>
           </div>
+          <p
+            style={
+              !loading
+                ? { display: 'none' }
+                : {
+                    color: alertBg,
+                    textAlign: 'center',
+                    fontSize: '20px',
+                    marginBottom: '100px',
+                  }
+            }
+            ref={divToScrollError}
+          >
+            {alertMessage}
+          </p>
 
-          {showTabs && (
+          {!showTabs && (
             <div
               style={{
                 margin: '50px 0',
