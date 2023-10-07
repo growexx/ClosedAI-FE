@@ -11,14 +11,7 @@ import {
 const { Panel } = Collapse;
 
 const UserStories = ({ stories, loading, error }) => {
-  const data = [];
-  stories.forEach((story, index) => {
-    data.push({
-      key: index,
-      label: story.description,
-      children: `<p>${story.description}<p>`,
-    });
-  });
+  console.log(stories, 'heree');
   return !loading ? (
     !error ? (
       <StyledUserStoriesWrapper>

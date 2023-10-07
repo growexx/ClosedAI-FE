@@ -21,9 +21,10 @@ import { StyledUploadWrapper, MessageWrapper } from './styledUploadDocument';
 import MindMap from '../../components/MindMap/index';
 import UserStories from '../../components/UserStories/index';
 import SystemActors from '../../components/SystemActors/index';
-import { Stories } from '../../components/UserStories/sampleStories';
 const { Option } = Select;
 const { Dragger } = Upload;
+
+const API_ENDPOINT = `https://node-mindmap-codeathon.onrender.com`;
 
 export function UploadDocuments() {
   const [fileList, setFileList] = useState([]);
@@ -41,10 +42,11 @@ export function UploadDocuments() {
   const [message, setMessage] = useState('');
   const [alertBg, setAlertBg] = useState('#25DCD8');
   const [uniqueId, setUniqueId] = useState(uuidv4().split('-')[0]);
-  // const [uniqueId, setUniqueId] = useState('abcd');
   const [startOverModal, setStartOverModal] = useState(false);
   const [mindmapNodes, setMindmapNodes] = useState([]);
   const [mindmapEdges, setMindmapEdges] = useState([]);
+  const [userStories, setUserStories] = useState([]);
+  const [systemActors, setSystemActors] = useState([]);
   const divToScroll = useRef(null);
   const divToScrollError = useRef(null);
   let limitFlag = false;
@@ -102,6 +104,7 @@ export function UploadDocuments() {
 
   const updatedFileTypeList = { ...fileTypeList };
   const handleSubmit = () => {
+    setShowTabs(false);
     setFinalLoading(true);
     setLoading(true);
     setTimeout(() => {
@@ -140,8 +143,7 @@ export function UploadDocuments() {
     data.append('fileInfo', JSON.stringify(updatedFileTypeList));
     data.append('userId', uniqueId);
 
-    const requestUrl =
-      'https://node-mindmap-codeathon.onrender.com/summary/upload-data';
+    const requestUrl = `${API_ENDPOINT}/summary/upload-data`;
     axios
       .post(requestUrl, data, {})
       .then(res => {
@@ -385,7 +387,7 @@ export function UploadDocuments() {
       label: 'User Stories',
       children: (
         <UserStories
-          stories={Stories[1].userStories}
+          stories={userStories}
           loading={storiesLoading}
           error={storiesError}
         />
@@ -396,7 +398,7 @@ export function UploadDocuments() {
       label: 'System Actors',
       children: (
         <SystemActors
-          stories={Stories[0].typesOfUsers}
+          stories={systemActors}
           loading={storiesLoading}
           error={storiesError}
         />
@@ -408,7 +410,7 @@ export function UploadDocuments() {
     // setStartOverModal(true);
     setMindmapLoading(true);
     setStoriesLoading(true);
-    const requestUrl1 = `https://node-mindmap-codeathon.onrender.com/summary/mind-map?userId=${uniqueId}`;
+    const requestUrl1 = `${API_ENDPOINT}/summary/mind-map?userId=${uniqueId}`;
     axios
       .get(requestUrl1, {})
       .then(res => {
@@ -423,31 +425,34 @@ export function UploadDocuments() {
         setMindmapError(true);
       })
       .finally(() => {
-        // setUniqueId(uuidv4().split('-')[0]);
+        // setTimeout(() => {
+        //   setUniqueId(uuidv4().split('-')[0]);
+        // }, 1000);
+
         setLoading(false);
         setMindmapLoading(false);
         if (!storiesLoading) {
           setFinalLoading(false);
         }
       });
-    const requestUrl2 = `https://node-mindmap-codeathon.onrender.com/summary/user-stories?userId=${uniqueId}`;
+    const requestUrl2 = `${API_ENDPOINT}/summary/user-stories?userId=${uniqueId}`;
     axios
       .get(requestUrl2, {})
       .then(res => {
         if (res.data.status === 1) {
-          // console.log('heree');
-          // setMindmapEdges(initialEdges);
-          // setMindmapNodes(initialNodes);
+          setUserStories(res.data.data.userStories);
+          setSystemActors(res.data.data.typesOfUsers);
         } else {
           setStoriesError(true);
         }
-        console.log(res, 'Rushilll afterr');
       })
       .catch(() => {
         setStoriesError(true);
       })
       .finally(() => {
-        // setUniqueId(uuidv4().split('-')[0]);
+        // setTimeout(() => {
+        //   setUniqueId(uuidv4().split('-')[0]);
+        // }, 1000);
         setLoading(false);
         setStoriesLoading(false);
         if (!mindmapLoading) {
@@ -458,7 +463,7 @@ export function UploadDocuments() {
 
   useEffect(() => {
     const events = new EventSource(
-      `https://node-mindmap-codeathon.onrender.com/summary/events?userId=${uniqueId}`,
+      `${API_ENDPOINT}/summary/events?userId=${uniqueId}`,
     );
 
     events.onmessage = event => {
@@ -474,8 +479,10 @@ export function UploadDocuments() {
 
         fetchData();
       }
+      if (event.data === 'processing failure') {
+        setStartOverModal(true);
+      }
     };
-    // fetchData();
   }, [uniqueId]);
 
   return (
