@@ -38,7 +38,7 @@ export function UploadDocuments() {
   const [storiesLoading, setStoriesLoading] = useState(false);
   const [mindmapError, setMindmapError] = useState(false);
   const [storiesError, setStoriesError] = useState(false);
-  const [alertMessage, setAlertMessage] = useState('Uploading your files ...');
+  const [alertMessage, setAlertMessage] = useState('Sit tight! Please do not reload the browser as we are uploading your files...');
   const [message, setMessage] = useState('');
   const [alertBg, setAlertBg] = useState('#25DCD8');
   const [uniqueId, setUniqueId] = useState(uuidv4().split('-')[0]);
@@ -110,7 +110,7 @@ export function UploadDocuments() {
     }
     const title = 'Closed AI';
     const icon = 'image-url';
-    const body = 'Your data has been loaded';
+    const body = 'We have worked our magic and your data is ready. Please open the Closed AI browser tab';
     const notification = new Notification(title, { body, icon });
     notification.onclick = () => {
       notification.close();
@@ -170,7 +170,7 @@ export function UploadDocuments() {
       .then(res => {
         if (res.data.status === 1) {
           setAlertMessage(
-            'Your files have been successfully uploaded. Please wait untill we analyze the data and prepare the result ...',
+            'Almost there. Your files have been uploaded and we will present the data to you shortly. Please do not reload the browser',
           );
         } else {
           setAlertBg('red');
@@ -570,7 +570,7 @@ export function UploadDocuments() {
             </div>
           </div>
           <div style={{ maxWidth: '570px', textAlign: 'center' }}>
-            <p>Convert requirements to MindMap</p>
+            <p>Product Discovery Assistant</p>
             <p>
               An innovative platform which helps users with the converting
               requirements for a product or a business and convert them to
@@ -579,7 +579,7 @@ export function UploadDocuments() {
           </div>
           <div
             className="multi-upload-dragger"
-            style={{ width: '100%', maxWidth: '700px', height: '220px' }}
+            style={{ width: '100%', maxWidth: '700px', height: '200px' }}
           >
             <Dragger
               {...props}
@@ -613,27 +613,33 @@ export function UploadDocuments() {
             style={{
               display: 'flex',
               justifyContent: 'center',
-              marginBottom: '36px',
+              marginBottom: '30px',
+              
             }}
           >
-            <Tooltip title="Please provide us GPT 4 access to enable this feature">
+            <Tooltip title="Need this feature? Please provide us with GPT 4 access to enable it ;)">
               <Button
                 to="#"
                 className="url-button"
                 style={{
                   textAlign: 'center',
-                  backgroundColor: '#090B13',
+                  backgroundColor: 'transparent',
                   border: 'none',
                   color: 'white',
                   display: 'flex',
                   justifyContent: 'center',
+                  opacity: '0.35',
+              borderRadius: '10px',
+              padding: '10px',
+              background: 'rgba(255,255,255,0.1)',
+              height: 'auto'
                 }}
                 onClick={() => {
                   if (fileList.length + urlList.length >= 5) {
                     notification.error({
                       message: 'Files Limit reached',
                       description:
-                        'At most 5 input resources are allowed including pdfs, audios, videos and websites to scrape.',
+                        'At most 3 input resources are allowed including pdfs, audios, videos and websites to scrape.',
                     });
                     return;
                   }
@@ -705,16 +711,6 @@ export function UploadDocuments() {
                   : {}
               }
             >
-              <div className="input">
-                <Input.TextArea
-                  placeholder="Please provide us a short decription about your product .."
-                  onChange={e => {
-                    setMessage(e.target.value);
-                  }}
-                  rows={4}
-                  style={{ width: '550px' }}
-                />
-              </div>
             </div>
           </MessageWrapper>
 
@@ -722,8 +718,7 @@ export function UploadDocuments() {
             style={{
               display: 'flex',
               justifyContent: 'center',
-              marginTop: '40px',
-              marginBottom: '70px',
+              marginTop: '0px',
             }}
             className="generate-btn"
           >
@@ -761,8 +756,11 @@ export function UploadDocuments() {
                 : {
                     color: alertBg,
                     textAlign: 'center',
-                    fontSize: '20px',
+                    fontSize: '14px',
+                    marginTop:'15px',
                     marginBottom: '100px',
+                    width: '100%',
+                    maxWidth: '700px'
                   }
             }
             ref={divToScrollError}
@@ -823,7 +821,7 @@ export function UploadDocuments() {
           </Button>
         </div>
       </Modal>
-      <div
+      {/* <div
         style={{
           position: 'fixed',
           bottom: 0,
@@ -836,7 +834,7 @@ export function UploadDocuments() {
         }}
       >
         <p>Unique User Id: {uniqueId}</p>
-      </div>
+      </div> */}
     </>
   );
 }

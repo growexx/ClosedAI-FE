@@ -19,7 +19,7 @@ export const StyledUploadWrapper = styled.div`
   padding: 10px 40px;
   width: 100%;
   max-width: 1000px;
-  margin: 40px auto;
+  margin: 30px auto;
   .heading {
     color: #fff;
     text-align: center;
@@ -28,7 +28,7 @@ export const StyledUploadWrapper = styled.div`
     font-weight: 700;
     line-height: normal;
     margin-top: 5px;
-    margin-bottom: 70px;
+    margin-bottom: 30px;
   }
 
   p:first-child {
@@ -98,7 +98,7 @@ export const StyledUploadWrapper = styled.div`
     padding: 5px 10px;
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 10px;
-    margin-bottom: 10px;
+    margin-bottom: 30px;
   }
   .attachment-container > div input {
     border-color: transparent !important;

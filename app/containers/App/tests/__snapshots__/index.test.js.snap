@@ -5,13 +5,13 @@ exports[`<App /> should render and match the snapshot 1`] = `
   data-testid="AppRoutes"
 >
   <HelmetWrapper
-    defaultTitle="React.js Boilerplate"
+    defaultTitle="Closed AI"
     defer={true}
     encodeSpecialCharacters={true}
-    titleTemplate="%s - React.js Boilerplate"
+    titleTemplate="%s - Closed AI"
   >
     <meta
-      content="A React.js Boilerplate application"
+      content="A Closed AI application"
       name="description"
     />
     <link

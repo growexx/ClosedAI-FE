@@ -43,10 +43,10 @@ export default function App() {
   return (
     <AppWrapper data-testid="AppRoutes">
       <Helmet
-        titleTemplate="%s - React.js Boilerplate"
-        defaultTitle="React.js Boilerplate"
+        titleTemplate="%s - Closed AI"
+        defaultTitle="Closed AI"
       >
-        <meta name="description" content="A React.js Boilerplate application" />
+        <meta name="description" content="A Closed AI application" />
         {FAV_ICONS.map((favIcon, index) => (
           <link {...favIcon} key={index} />
         ))}
