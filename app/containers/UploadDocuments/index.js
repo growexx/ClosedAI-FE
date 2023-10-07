@@ -24,7 +24,7 @@ import SystemActors from '../../components/SystemActors/index';
 const { Option } = Select;
 const { Dragger } = Upload;
 
-const API_ENDPOINT = `https://node-mindmap-codeathon.onrender.com`;
+const API_ENDPOINT = `http://13.126.144.169:4000`;
 
 export function UploadDocuments() {
   const [fileList, setFileList] = useState([]);
@@ -103,6 +103,27 @@ export function UploadDocuments() {
   };
 
   const updatedFileTypeList = { ...fileTypeList };
+
+  function showNotification() {
+    if (document.visibilityState === 'visible') {
+      return;
+    }
+    const title = 'Closed AI';
+    const icon = 'image-url';
+    const body = 'Your data has been loaded';
+    const notification = new Notification(title, { body, icon });
+    notification.onclick = () => {
+      notification.close();
+      window.parent.focus();
+    };
+  }
+  function requestAndShowPermission() {
+    Notification.requestPermission(perm => {
+      if (perm === 'granted') {
+        showNotification();
+      }
+    });
+  }
   const handleSubmit = () => {
     setShowTabs(false);
     setFinalLoading(true);
@@ -417,6 +438,7 @@ export function UploadDocuments() {
         if (res.data.status === 1) {
           setMindmapEdges(res.data.data.edges);
           setMindmapNodes(res.data.data.nodes);
+          showNotification();
         } else {
           setMindmapError(true);
         }
@@ -465,6 +487,9 @@ export function UploadDocuments() {
     const events = new EventSource(
       `${API_ENDPOINT}/summary/events?userId=${uniqueId}`,
     );
+    Notification.requestPermission().then(permission => {
+      console.log(permission);
+    });
 
     events.onmessage = event => {
       if (event.data === 'processing completed') {
